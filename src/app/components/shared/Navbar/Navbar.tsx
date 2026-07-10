@@ -24,7 +24,7 @@ export default function Navbar() {
   const publicLinks: NavLink[] = [
     { name: "Home", href: "/", icon: Home },
     { name: "Explore", href: "/explore", icon: Compass },
-    { name: "About", href: "/about", icon: Info },
+    { name: "About Us", href: "/about", icon: Info },
   ];
 
   const privateLinks: NavLink[] = [

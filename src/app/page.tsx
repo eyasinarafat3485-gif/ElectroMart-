@@ -17,7 +17,7 @@ export default function Home() {
       <Stats />
       <Features />
       <CustomerStories />
-      <TechInsights />
+      {/* <TechInsights /> */}
       <Newsletter />
     </div>
   );

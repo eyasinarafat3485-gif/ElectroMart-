@@ -74,7 +74,7 @@ const AddItemPage: React.FC = () => {
             return;
         }
 
-        const response = await fetch('http://localhost:5000/api/items', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/items`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(itemsData),

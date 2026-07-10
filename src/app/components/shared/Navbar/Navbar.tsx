@@ -23,14 +23,14 @@ export default function Navbar() {
   // রিকোয়ারমেন্ট অনুযায়ী সব লিংকেই আইকন যুক্ত করা হলো (যাতে টাইপ এরর না আসে)
   const publicLinks: NavLink[] = [
     { name: "Home", href: "/", icon: Home },
-    { name: "Explore", href: "/explore", icon: Compass },
+    { name: "All Items", href: "/all-items", icon: Compass },
     { name: "About Us", href: "/about", icon: Info },
   ];
 
   const privateLinks: NavLink[] = [
     { name: "Home", href: "/", icon: Home },
-    { name: "Explore", href: "/explore", icon: Compass },
-    { name: "Add Item", href: "/items/add", icon: PlusCircle },
+    // { name: "Explore", href: "/explore", icon: Compass },
+    { name: "Add Item", href: "/add/item", icon: PlusCircle },
     { name: "Manage Items", href: "/items/manage", icon: Settings },
   ];
 

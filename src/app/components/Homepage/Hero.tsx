@@ -72,7 +72,7 @@ export default function Hero() {
   const ActiveIcon = slides[currentSlide].icon;
 
   return (
-    <section className="relative h-[69vh] w-full bg-slate-950 overflow-hidden border-b border-slate-900 flex items-center">
+    <section className="relative h-[69vh] w-full bg-slate-950 overflow-hidden border-slate-900 flex items-center">
       
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff02_1px,transparent_1px),linear-gradient(to_bottom,#ffffff02_1px,transparent_1px)] bg-[size:35px_35px]" />
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-600/10 blur-[150px] rounded-full pointer-events-none" />

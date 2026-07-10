@@ -19,9 +19,12 @@ export default function Features() {
   ];
 
   return (
-    <section className="bg-slate-950 py-15 border-b border-slate-900">
+    <section className="bg-slate-950 py-15 border-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* ৪ কলাম গ্রিড যা মোবাইলে ১ কলামে কনভার্ট হবে */}
+        <div className="text-center mb-12">
+          <span className="text-indigo-400 text-xs font-semibold tracking-wider uppercase">Why Choose Us</span>
+          
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feat) => {
             const Icon = feat.icon;

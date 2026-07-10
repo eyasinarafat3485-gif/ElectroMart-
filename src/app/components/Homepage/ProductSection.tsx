@@ -32,7 +32,7 @@ export default function ProductSection() {
           price: 2499,
           oldPrice: 2699,
           rating: 4.9,
-          image: "💻", // এখানে তোমার ইমেজ বা ইউআরএল বসবে
+          image: "💻", 
           isNew: true,
         },
         {
@@ -63,7 +63,7 @@ export default function ProductSection() {
         },
       ]);
       setLoading(false);
-    }, 2000); // ২ সেকেন্ড পর লোডিং ফলস হবে
+    }, 2000); 
 
     return () => clearTimeout(timer);
   }, []);

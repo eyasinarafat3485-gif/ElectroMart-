@@ -17,8 +17,6 @@ export default function Home() {
       <Stats />
       <Features />
       <CustomerStories />
-      {/* <TrustedBrands /> */}
-      {/* <Features /> */}
       <TechInsights />
       <Newsletter />
     </div>

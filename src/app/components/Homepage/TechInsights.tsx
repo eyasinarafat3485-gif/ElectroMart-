@@ -1,4 +1,3 @@
-// components/home/TechInsights.tsx
 const insights = [
   {
     title: "Best Smartphones Under ৳50,000 in 2026",
@@ -25,17 +24,22 @@ const insights = [
 
 export default function TechInsights() {
   return (
-    <section className="bg-slate-950 py-20 border-b border-slate-900">
+    <section className="bg-slate-950 py-15 border-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
           <div>
-            <span className="text-indigo-400 text-xs font-semibold tracking-wider uppercase">KNOWLEDGE HUB</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-2">Tech Insights</h2>
+            <span className="text-indigo-400 text-xs font-semibold tracking-wider uppercase block mb-1">
+              KNOWLEDGE HUB
+            </span>
+            <h2 className="text-2xl md:text-4xl font-extrabold text-white tracking-tight">
+              Tech Insights
+            </h2>
           </div>
+          
           <a 
             href="/blog" 
-            className="text-indigo-400 hover:text-indigo-300 font-medium mt-4 md:mt-0 inline-flex items-center gap-2"
+            className="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition-colors mt-4 md:mt-0 inline-flex items-center gap-1"
           >
             View All Articles →
           </a>

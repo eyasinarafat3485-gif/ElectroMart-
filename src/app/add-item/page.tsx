@@ -150,8 +150,6 @@ const AddItemPage: React.FC = () => {
                                     <option value="Laptops">Laptops</option>
                                     <option value="Televisions">Televisions</option>
                                     <option value="Cameras">Cameras</option>
-                                    <option value="Accessories">Accessories</option>
-                                    <option value="Others">Others</option>
                                 </select>
                             </div>
 

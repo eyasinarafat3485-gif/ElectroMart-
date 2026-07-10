@@ -40,7 +40,7 @@ export default function ItemCard({ item }: Props) {
                     className="w-full h-60 object-cover rounded-xl"
                     onError={() => console.log("Image failed:", item.image)}
                 />
-                <div className="absolute right-4 top-4 rounded-full bg-cyan-500 px-3 py-1 text-xs font-semibold text-white shadow-lg">
+                <div className="absolute right-3 top-3 rounded-full bg-cyan-500 px-3 py-1 text-xs font-semibold text-white shadow-lg">
                     {item.category}
                 </div>
             </div>

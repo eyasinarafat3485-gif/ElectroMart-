@@ -17,7 +17,7 @@ export default function LoadingScreen() {
   if (!show) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-slate-950 gap-6">
-        <Spinner size="lg" color="primary" />
+        <Spinner size="xl" className="text-blue-500" />
 
         <h2 className="text-2xl font-semibold text-white animate-pulse">
           Loading...

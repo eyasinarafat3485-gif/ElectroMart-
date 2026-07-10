@@ -75,8 +75,8 @@ const AllItemsPage = ({ initialItems = [] }: AllItemsClientProps) => {
     }, [searchQuery, selectedCategory, maxPrice, sortBy]);
 
     return (
-        <div className="bg-slate-950 min-h-screen">
-            <div className="max-w-7xl mx-auto px-5 py-16">
+        <div className="bg-slate-950 min-h-screen ">
+            <div className="max-w-7xl mx-auto px-5 py-16 pt-30 pb-15">
 
                 {/* Header */}
                 <div className="text-center max-w-3xl mx-auto">

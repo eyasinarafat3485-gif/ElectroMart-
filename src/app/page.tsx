@@ -1,9 +1,17 @@
-import Image from "next/image";
+import CustomerStories from "./components/Homepage/CustomerStories";
+import Features from "./components/Homepage/Features";
+import Hero from "./components/Homepage/Hero";
+import ProductSection from "./components/Homepage/ProductSection";
+
 
 export default function Home() {
   return (
    <div>
-    <h2 className="text-2xl font-bold mb-4">Welcome to My Next.js App</h2>
+    <Hero />
+    <ProductSection />
+
+    <CustomerStories />
+    <Features />
    </div>
   );
 }

@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Star, ArrowLeft, ShoppingBag, MapPin, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
 import { TbCoinTaka } from "react-icons/tb";
+import ItemCard from '@/app/components/others ui/ItemCard';
 
 interface ItemDetail {
   _id: string; 
@@ -36,6 +37,7 @@ export default function ItemDetailsPage() {
   const id = params?.id as string; 
 
   const [item, setItem] = useState<ItemDetail | null>(null);
+  const [relatedItems, setRelatedItems] = useState<ItemDetail[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,6 +64,27 @@ export default function ItemDetailsPage() {
 
     fetchItemDetails();
   }, [id]);
+
+  useEffect(() => {
+    if (!item || !item.category) return;
+
+    const fetchRelatedItems = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/items?category=${item.category}`);
+        if (res.ok) {
+          const data: ItemDetail[] = await res.json();
+          const filtered = data
+            .filter((p) => p._id !== item._id)
+            .slice(0, 4);
+          setRelatedItems(filtered);
+        }
+      } catch (err) {
+        console.error("Failed to fetch related items:", err);
+      }
+    };
+
+    fetchRelatedItems();
+  }, [item, id]);
 
   if (loading) {
     return (
@@ -205,6 +228,21 @@ export default function ItemDetailsPage() {
 
           </motion.div>
         </div>
+
+        {/* Related Items */}
+        {relatedItems.length > 0 && (
+          <div className="mt-16 space-y-6">
+            <h2 className="text-2xl font-extrabold text-white tracking-tight border-b border-slate-800/60 pb-3">
+              Related Products <span className="text-cyan-400">({item.category})</span>
+            </h2>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {relatedItems.map((relatedItem) => (
+                <ItemCard key={relatedItem._id} item={relatedItem} />
+              ))}
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

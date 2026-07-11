@@ -7,6 +7,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, ShoppingBag, User, LogOut, ShoppingCart, Package, PlusCircle, Settings, Home, Info, Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
+import EMLogo from "../../../../../public/ElectroMart.png";
+import Image from "next/image";
 
 interface NavLink {
   name: string;
@@ -92,7 +94,9 @@ const isLoggedIn = !!user;
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2 text-white font-bold text-xl tracking-wider">
-              <ShoppingBag className="h-6 w-6 text-indigo-500" />
+            <Image src={EMLogo} alt="ElectroMart Logo" className="h-9 w-9 rounded-full " />
+            {/* <img src={EMLogo} alt="ElectroMart Logo" className="h-8 w-8" /> */}
+              {/* <ShoppingBag className="h-6 w-6 text-indigo-500" /> */}
               <span>
                 Electro<span className="text-indigo-500">Mart</span>
               </span>

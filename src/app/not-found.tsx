@@ -4,7 +4,7 @@ import { ArrowLeft, ShoppingBag } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="min-h-[85vh] flex items-center justify-center bg-slate-950  relative overflow-hidden pt-30 pb-15 px-4">
+    <div className="min-h-[85vh] flex items-center justify-center bg-slate-950  relative overflow-hidden pt-25 pb-15 px-4">
       
       <div className="absolute inset-0 bg-[radial-gradient(#ffffff03_1px,transparent_1px)] [background-size:40px_40px]" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none" />

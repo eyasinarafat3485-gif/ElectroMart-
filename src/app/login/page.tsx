@@ -29,9 +29,8 @@ export default function LoginPage() {
         setError("");
     };
 
-    const handleSubmit = async (
-        e: React.FormEvent<HTMLFormElement>
-    ) => {
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         setError("");
@@ -57,20 +56,20 @@ export default function LoginPage() {
 
             toast.success("Login successfully done.");
 
-            router.push("/");
+            const callbackUrl = new URLSearchParams(window.location.search).get("callbackUrl");
+
+            if (callbackUrl) {
+                router.push(decodeURIComponent(callbackUrl));
+            } else {
+                router.push("/"); 
+            }
 
         } catch (err) {
-
             console.error(err);
-
             setError("Something went wrong.");
-
             toast.error("Something went wrong.");
-
         } finally {
-
             setLoading(false);
-
         }
     };
 

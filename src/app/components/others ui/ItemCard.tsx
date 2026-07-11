@@ -1,17 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Star, ArrowRight, BadgeDollarSign } from "lucide-react";
+import { Star, ArrowRight } from "lucide-react";
 
 import { Item } from "@/types/item";
 import { TbCoinTaka } from "react-icons/tb";
 
-// ১. টাইপস্ক্রিপ্ট টাইপ ডিফাইন করা হলো
 type CategoryType = 'Smartphones' | 'Laptops' | 'Televisions' | 'Headphones' | 'Cameras';
 
-// ২. ক্যাটাগরি অনুযায়ী কালার ম্যাপিং অবজেক্ট
 const categoryColors: Record<CategoryType, string> = {
     Smartphones: 'bg-green-500 text-white',
     Laptops: 'bg-orange-500 text-white',
@@ -25,7 +22,7 @@ interface Props {
 }
 
 export default function ItemCard({ item }: Props) {
-    // ৩. টাইপ কাস্টিং করে ক্যাটাগরি কালার ক্লাস নেওয়া হলো (যদি কোনো কারণে ক্যাটাগরি না মেলে তবে ডিফল্ট gray কালার পাবে)
+   
     const currentCategoryColor = categoryColors[item.category as CategoryType] || 'bg-gray-500 text-white';
 
     return (
@@ -56,7 +53,7 @@ export default function ItemCard({ item }: Props) {
                     className="w-full h-60 object-cover rounded-xl"
                     onError={() => console.log("Image failed:", item.image)}
                 />
-                {/* ৪. এখানে ডাইনামিক কালার ক্লাসটি বসিয়ে দেওয়া হয়েছে */}
+
                 <div className={`absolute right-3 top-3 rounded-full px-3 py-1 text-xs font-semibold shadow-lg ${currentCategoryColor}`}>
                     {item.category}
                 </div>

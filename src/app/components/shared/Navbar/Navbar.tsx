@@ -29,9 +29,10 @@ export default function Navbar() {
 
   const privateLinks: NavLink[] = [
     { name: "Home", href: "/", icon: Home },
-    // { name: "Explore", href: "/explore", icon: Compass },
+    { name: "All Items", href: "/all-items", icon: Compass },
     { name: "Add Item", href: "/add/item", icon: PlusCircle },
     { name: "Manage Items", href: "/items/manage", icon: Settings },
+    { name: "About Us", href: "/about", icon: Info },
   ];
 
   const currentLinks = isLoggedIn ? privateLinks : publicLinks;

@@ -76,7 +76,7 @@ const AllItemsPage = ({ initialItems = [] }: AllItemsClientProps) => {
 
     return (
         <div className="bg-slate-950 min-h-screen ">
-            <div className="max-w-7xl mx-auto px-5 py-16 pt-30 pb-15">
+            <div className="max-w-7xl mx-auto px-5 py-15 pt-30 pb-15">
 
                 {/* Header */}
                 <div className="text-center max-w-3xl mx-auto">

@@ -1,9 +1,10 @@
+
 'use client';
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, X, ShoppingBag, User, LogOut, PlusCircle, Settings, Home, Compass, Info, Loader2 } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Menu, X, ShoppingBag, User, LogOut, ShoppingCart, Package, PlusCircle, Settings, Home, Info, Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 
@@ -16,6 +17,7 @@ interface NavLink {
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const router = useRouter();
   
   // Refs for tracking clicks outside
   const desktopProfileRef = useRef<HTMLDivElement>(null);
@@ -26,9 +28,14 @@ export default function Navbar() {
   const isLoading = isPending;
   const pathname = usePathname();
 
-  const isLoggedIn = !!user;
+const isLoggedIn = !!user;
+  
+  const userWithRole = user as Record<string, unknown> & { role?: string };
+  const sessionWithRole = session as Record<string, unknown> & { role?: string };
+  
+  const userRole = userWithRole?.role || sessionWithRole?.role;
+  const isAdmin = userRole?.toLowerCase() === 'admin' || user?.email === 'admin123@gmail.com';
 
-  // Global click listener to close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
@@ -53,25 +60,29 @@ export default function Navbar() {
     toast.warning("Logged out successfully!", { autoClose: 2000 });
     setProfileOpen(false);
     setIsOpen(false);
+    router.push("/login");
   };
 
   const isActive = (path: string) => pathname === path;
 
   const publicLinks: NavLink[] = [
     { name: "Home", href: "/", icon: Home },
-    { name: "All Items", href: "/all-items", icon: Compass },
+    { name: "All Items", href: "/all-items", icon: Package  },
+    { name: "My Collection", href: "/my-collection", icon: ShoppingCart },
     { name: "About Us", href: "/about", icon: Info },
   ];
 
   const privateLinks: NavLink[] = [
     { name: "Home", href: "/", icon: Home },
-    { name: "All Items", href: "/all-items", icon: Compass },
+    { name: "All Items", href: "/all-items", icon: Package },
     { name: "Add Item", href: "/add-item", icon: PlusCircle },
+    { name: "My Collection", href: "/my-collection", icon: ShoppingCart },
     { name: "Manage Items", href: "/items/manage", icon: Settings },
     { name: "About Us", href: "/about", icon: Info },
   ];
 
-  const currentLinks = isLoggedIn ? privateLinks : publicLinks;
+  // Only show privateLinks if the user is logged in AND is an admin
+  const currentLinks = (isLoggedIn && isAdmin) ? privateLinks : publicLinks;
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 h-17 w-full bg-slate-900 border-b border-slate-800 shadow-md">
@@ -194,7 +205,7 @@ export default function Navbar() {
           <div className="md:hidden flex items-center" ref={mobileMenuRef}>
             <button
               onClick={(e) => {
-                e.stopPropagation(); // Prevents instant closing from event propagation
+                e.stopPropagation();
                 setIsOpen(!isOpen);
               }}
               className="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none"
@@ -207,7 +218,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-slate-900 border border-slate-800 p-2 rounded-2xl shadow-xl z-50 absolute top-16 right-3 w-45 origin-top-right">
+        <div className="md:hidden bg-slate-900 border border-slate-800 p-2 rounded-2xl shadow-xl z-50 absolute top-16 right-3 w-56 origin-top-right">
           {/* Mobile User Profile Header */}
           {isLoggedIn && (
             <>

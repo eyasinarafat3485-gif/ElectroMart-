@@ -1,26 +1,62 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ShoppingBag, User, LogOut, PlusCircle, Settings, Home, Compass, Info } from "lucide-react";
+import { Menu, X, ShoppingBag, User, LogOut, PlusCircle, Settings, Home, Compass, Info, Loader2 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "react-toastify";
 
-// টাইপ স্ক্রিপ্টের জন্য লিংকের ইন্টারফেস বা টাইপ ফিক্সড করা
 interface NavLink {
   name: string;
   href: string;
-  icon: React.ComponentType<{ className?: string }>; // আইকনের প্রোপার্টি টাইপ
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   
-  // টেস্ট করার জন্য এই স্টেটটি পরিবর্তন করে দেখতে পারো (true = logged in, false = logged out)
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  // Refs for tracking clicks outside
+  const desktopProfileRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user;
+  const isLoading = isPending;
   const pathname = usePathname();
 
-  // রিকোয়ারমেন্ট অনুযায়ী সব লিংকেই আইকন যুক্ত করা হলো (যাতে টাইপ এরর না আসে)
+  const isLoggedIn = !!user;
+
+  // Global click listener to close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      
+      // Close desktop profile dropdown
+      if (desktopProfileRef.current && !desktopProfileRef.current.contains(target)) {
+        setProfileOpen(false);
+      }
+      
+      // Close mobile menu if clicked outside
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = async () => {
+    await authClient.signOut();
+    toast.warning("Logged out successfully!", { autoClose: 2000 });
+    setProfileOpen(false);
+    setIsOpen(false);
+  };
+
+  const isActive = (path: string) => pathname === path;
+
   const publicLinks: NavLink[] = [
     { name: "Home", href: "/", icon: Home },
     { name: "All Items", href: "/all-items", icon: Compass },
@@ -30,21 +66,19 @@ export default function Navbar() {
   const privateLinks: NavLink[] = [
     { name: "Home", href: "/", icon: Home },
     { name: "All Items", href: "/all-items", icon: Compass },
-    { name: "Add Item", href: "/add/item", icon: PlusCircle },
+    { name: "Add Item", href: "/add-item", icon: PlusCircle },
     { name: "Manage Items", href: "/items/manage", icon: Settings },
     { name: "About Us", href: "/about", icon: Info },
   ];
 
   const currentLinks = isLoggedIn ? privateLinks : publicLinks;
 
-  const isActive = (path: string) => pathname === path;
-
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-16 w-full bg-slate-900 border-b border-slate-800 shadow-md">
+    <nav className="fixed top-0 left-0 right-0 z-50 h-17 w-full bg-slate-900 border-b border-slate-800 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
-          {/* ১. লোগো এরিয়া */}
+          {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2 text-white font-bold text-xl tracking-wider">
               <ShoppingBag className="h-6 w-6 text-indigo-500" />
@@ -54,10 +88,9 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* ২. ডেক্সটপ মেনু (Desktop View) */}
+          {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-1">
             {currentLinks.map((link) => {
-              // প্রধান সমাধান: ছোট হাতের link.icon কে বড় হাতের Icon ভ্যারিয়েবলে নেওয়া হলো
               const Icon = link.icon;
               return (
                 <Link
@@ -77,42 +110,93 @@ export default function Navbar() {
               );
             })}
 
-            {/* লগইন বা প্রোফাইল বাটন */}
-            <div className="ml-4 pl-4 border-l border-slate-800">
-              {isLoggedIn ? (
-                <div className="flex items-center space-x-3">
-                  <Link
-                    href="/profile"
-                    className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium ${
-                      isActive("/profile") ? "text-indigo-400" : "text-slate-300 hover:text-white"
-                    }`}
-                  >
-                    <User className="w-4 h-4" />
-                    <span>My Profile</span>
-                  </Link>
-                  <button
-                    onClick={() => setIsLoggedIn(false)}
-                    className="flex items-center space-x-1 text-slate-400 hover:text-rose-400 text-sm font-medium transition-colors"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span>Logout</span>
+            {/* Auth Section - Desktop */}
+            <div className="ml-4 pl-4 border-l border-slate-800 flex items-center gap-4">
+              {isLoading ? (
+                <Loader2 className="animate-spin text-indigo-500 w-5 h-5" />
+              ) : isLoggedIn ? (
+                /* DESKTOP PROFILE DROPDOWN */
+                <div className="relative" ref={desktopProfileRef}>
+                  <button onClick={() => setProfileOpen(!profileOpen)} className="block focus:outline-none pt-1">
+                    {user?.image ? (
+                      <img src={user.image} alt={user.name} className="w-8 h-8 rounded-full object-cover ring-2 cursor-pointer ring-indigo-500/20" />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-sm font-bold text-white ring-2 ring-indigo-500/20">
+                        {user?.name?.[0]?.toUpperCase()}
+                      </div>
+                    )}
                   </button>
+
+                  {profileOpen && (
+                    <div className="absolute right-0 mt-3 w-56 p-2 rounded-2xl border border-slate-700 bg-slate-900 shadow-xl z-50 origin-top-right">
+                      {/* USER INFO */}
+                      <div className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-xl border border-slate-800 mb-1.5">
+                        {user?.image ? (
+                          <img src={user.image} alt={user.name} className="w-8 h-8 rounded-full object-cover ring-2 ring-indigo-500/20" />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold text-white">
+                            {user?.name?.[0]?.toUpperCase()}
+                          </div>
+                        )}
+                        <div className="flex flex-col min-w-0">
+                          <p className="text-xs font-bold text-slate-200 truncate">{user?.name}</p>
+                          <p className="text-[10px] text-slate-400 truncate">{user?.email}</p>
+                        </div>
+                      </div>
+
+                      <hr className="border-slate-800 my-1 mx-2" />
+
+                      <ul className="flex flex-col gap-1">
+                        <li>
+                          <Link
+                            href="/profile"
+                            onClick={() => setProfileOpen(false)}
+                            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl transition-colors ${
+                              isActive("/profile")
+                                ? "text-indigo-400 bg-indigo-500/10 border border-indigo-500/20"
+                                : "text-slate-300 hover:text-white hover:bg-slate-800"
+                            }`}
+                          >
+                            <User className="w-4 h-4" />
+                            My Profile
+                          </Link>
+                        </li>
+                        <li>
+                          <button
+                            onClick={handleLogout}
+                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-red-400 hover:text-red-500 rounded-xl hover:bg-red-950/20 transition-all cursor-pointer text-left"
+                          >
+                            <LogOut className="w-4 h-4" />
+                            Logout
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
               ) : (
-                <Link
-                  href="/login"
-                  className="bg-indigo-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20"
-                >
-                  Login
-                </Link>
+                <>
+                  <Link href="/login" className="text-slate-300 font-medium text-sm hover:text-indigo-400 transition">
+                    Login
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="bg-indigo-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20"
+                  >
+                    Register
+                  </Link>
+                </>
               )}
             </div>
           </div>
 
-          {/* ৩. মোবাইল হ্যামবার্গার বাটন */}
-          <div className="md:hidden flex items-center">
+          {/* Mobile Hamburger Button */}
+          <div className="md:hidden flex items-center" ref={mobileMenuRef}>
             <button
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={(e) => {
+                e.stopPropagation(); // Prevents instant closing from event propagation
+                setIsOpen(!isOpen);
+              }}
               className="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -121,64 +205,106 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ৪. মোবাইল ড্রপডাউন মেনু */}
+      {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-slate-900 border-b border-slate-800 px-2 pt-2 pb-4 space-y-1 sm:px-3">
-          {currentLinks.map((link) => {
-            // মোবাইল ভিউতেও একই ফিক্সড ব্যবহার করা হলো
-            const Icon = link.icon;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive(link.href)
-                    ? "bg-indigo-600 text-white"
-                    : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                }`}
-              >
-                <div className="flex items-center space-x-2">
-                  <Icon className="w-5 h-5" />
-                  <span>{link.name}</span>
+        <div className="md:hidden bg-slate-900 border border-slate-800 p-2 rounded-2xl shadow-xl z-50 absolute top-16 right-3 w-45 origin-top-right">
+          {/* Mobile User Profile Header */}
+          {isLoggedIn && (
+            <>
+              <div className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-xl border border-slate-800 mb-2">
+                {user?.image ? (
+                  <img src={user.image} alt={user.name} className="w-9 h-9 rounded-full object-cover ring-2 ring-indigo-500/20" />
+                ) : (
+                  <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-sm font-bold text-white">
+                    {user?.name?.[0]?.toUpperCase()}
+                  </div>
+                )}
+                <div className="flex flex-col min-w-0">
+                  <p className="text-sm font-bold text-slate-200 truncate">{user?.name}</p>
+                  <p className="text-xs text-slate-400 truncate">{user?.email}</p>
                 </div>
-              </Link>
-            );
-          })}
-
-          {/* মোবাইল লগইন/লগআউট সেকশন */}
-          <div className="pt-4 mt-2 border-t border-slate-800 px-3">
-            {isLoggedIn ? (
-              <div className="space-y-2">
-                <Link
-                  href="/profile"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center space-x-2 text-slate-300 hover:text-white text-base font-medium py-2"
-                >
-                  <User className="w-5 h-5" />
-                  <span>My Profile</span>
-                </Link>
-                <button
-                  onClick={() => {
-                    setIsLoggedIn(false);
-                    setIsOpen(false);
-                  }}
-                  className="flex items-center space-x-2 text-rose-400 hover:text-rose-500 text-base font-medium py-2 w-full text-left"
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span>Logout</span>
-                </button>
               </div>
+              <hr className="border-slate-800 my-1 mx-2" />
+            </>
+          )}
+
+          <ul className="flex flex-col gap-1">
+            {currentLinks.map((link) => {
+              const Icon = link.icon;
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`block px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                      isActive(link.href)
+                        ? "bg-indigo-600 text-white"
+                        : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Icon className="w-5 h-5" />
+                      <span>{link.name}</span>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+
+            <hr className="border-slate-800 my-1.5 mx-2" />
+
+            {/* Mobile Auth Actions */}
+            {isLoading ? (
+              <div className="flex justify-center py-2">
+                <Loader2 className="animate-spin text-indigo-500 w-5 h-5" />
+              </div>
+            ) : isLoggedIn ? (
+              <>
+                <li>
+                  <Link
+                    href="/profile"
+                    onClick={() => setIsOpen(false)}
+                    className={`block px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                      isActive("/profile")
+                        ? "text-indigo-400 bg-indigo-500/10 border border-indigo-500/20"
+                        : "text-slate-300 hover:bg-slate-800"
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <User className="w-5 h-5" />
+                      <span>My Profile</span>
+                    </div>
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2.5 text-sm font-bold text-red-400 hover:text-red-500 rounded-xl hover:bg-red-950/20 transition-all cursor-pointer flex items-center gap-2"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    Logout
+                  </button>
+                </li>
+              </>
             ) : (
-              <Link
-                href="/login"
-                onClick={() => setIsOpen(false)}
-                className="block text-center bg-indigo-600 text-white px-4 py-2 rounded-md text-base font-medium hover:bg-indigo-700"
-              >
-                Login
-              </Link>
+              <div className="grid grid-cols-1 gap-2 p-1">
+                <Link
+                  href="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="block text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-750 text-center font-bold text-xs rounded-xl py-2 transition-all border border-slate-700"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  onClick={() => setIsOpen(false)}
+                  className="block bg-indigo-600 hover:bg-indigo-700 text-white text-center font-bold text-xs rounded-xl py-2 shadow-md shadow-indigo-950/40 transition-all cursor-pointer"
+                >
+                  Register
+                </Link>
+              </div>
             )}
-          </div>
+          </ul>
         </div>
       )}
     </nav>

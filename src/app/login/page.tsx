@@ -55,7 +55,7 @@ export default function LoginPage() {
                 return;
             }
 
-            toast.success("Welcome back!");
+            toast.success("Login successfully done.");
 
             router.push("/");
 

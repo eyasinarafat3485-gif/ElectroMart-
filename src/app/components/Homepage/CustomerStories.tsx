@@ -28,7 +28,7 @@ const reviews = [
 export default function CustomerStories() {
   return (
     <section className="bg-slate-950 py-15 border-slate-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-10 lg:px-8">
         <div className="text-center mb-12">
           <span className="text-indigo-400 text-xs font-semibold tracking-wider uppercase">TESTIMONIALS</span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-2">What Our Customers Say</h2>

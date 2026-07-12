@@ -23,8 +23,8 @@ export default async function ProductSection() {
   const products: Product[] = await res.json();
 
   return (
-    <section className="py-15 bg-slate-950">
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="py-15 bg-slate-950 px-4 md:px-10 ">
+      <div className="max-w-7xl mx-auto ">
         <div className="flex justify-between items-center mb-10">
           <div>
             <p className="text-indigo-400 uppercase text-sm">Top Picks</p>

@@ -19,7 +19,7 @@ export default function Features() {
   ];
 
   return (
-    <section className="bg-slate-950 py-15 border-slate-900">
+    <section className="bg-slate-950 py-15 border-slate-900 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <span className="text-indigo-400 text-xs font-semibold tracking-wider uppercase">Why Choose Us</span>

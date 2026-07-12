@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { authClient } from "@/lib/auth-client"; 
+import { authClient } from "@/lib/auth-client";
 import { Loader2, ShoppingBag, Calendar, ArrowRight, ShoppingCart } from 'lucide-react';
 import { TbCoinTaka } from "react-icons/tb";
 
@@ -12,11 +12,13 @@ interface OrderItem {
   userId: string;
   userName: string;
   userEmail: string;
+  userImage?: string;
   productId: string;
   productTitle: string;
   price: number;
   imageUrl: string;
   orderedAt: string;
+  status?: string; 
 }
 
 export default function MyCollectionPage() {
@@ -35,12 +37,12 @@ export default function MyCollectionPage() {
     const fetchMyOrders = async () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/orders?email=${session.user.email}`);
-        
+
         if (!res.ok) {
           throw new Error("Failed to fetch your collection");
         }
-        
-        const data = await res.json();
+
+        const data: OrderItem[] = await res.json();
         setOrders(data);
       } catch (err: any) {
         setError(err.message || "Something went wrong while fetching data");
@@ -51,6 +53,49 @@ export default function MyCollectionPage() {
 
     fetchMyOrders();
   }, [session, authLoading]);
+
+  // Safe Status Badge with default "Pending"
+  const getStatusBadge = (status?: string) => {
+    const normalizedStatus = (status || 'pending').toLowerCase();
+
+    if (normalizedStatus === 'pending') {
+      return (
+        <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-md font-medium text-sm">
+          Pending
+        </span>
+      );
+    }
+
+    if (normalizedStatus === 'confirmed' || normalizedStatus === 'done') {
+      return (
+        <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-md font-medium text-sm">
+          Confirmed
+        </span>
+      );
+    }
+
+    if (normalizedStatus === 'delivered') {
+      return (
+        <span className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 px-3 py-1 rounded-md font-medium text-sm">
+          Delivered
+        </span>
+      );
+    }
+
+    if (normalizedStatus === 'rejected') {
+      return (
+        <span className="bg-rose-500/10 text-rose-400 border border-rose-500/30 px-3 py-1 rounded-md font-medium text-sm">
+          Rejected
+        </span>
+      );
+    }
+
+    return (
+      <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-md font-medium text-sm">
+        Pending
+      </span>
+    );
+  };
 
   if (authLoading || loading) {
     return (
@@ -77,8 +122,8 @@ export default function MyCollectionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 px-5 py-15 pt-30 pb-15 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-slate-950 text-slate-100 py-15 px-4 md:px-10 pt-30 pb-15 sm:px-6 lg:px-8">
+      <div className=" mx-auto">
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6 mb-10">
           <div>
@@ -102,13 +147,13 @@ export default function MyCollectionPage() {
         )}
 
         {orders.length === 0 ? (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="bg-slate-900/40 border border-slate-800/60 rounded-3xl p-12 text-center max-w-xl mx-auto backdrop-blur-sm"
           >
             <p className="text-lg font-semibold text-slate-300 mb-2">Your collection is empty!</p>
-            <p className="text-sm text-slate-500 mb-6">You haven't ordered any premium items yet. Start exploring our shop today.</p>
+            <p className="text-sm text-slate-500 mb-6">You have not ordered any premium items yet. Start exploring our shop today.</p>
             <Link href="/all-items" className="inline-flex items-center gap-2 rounded-xl bg-slate-900 border border-slate-800 px-5 py-2.5 text-sm font-semibold text-cyan-400 hover:bg-slate-800 transition-all group">
               Explore Products <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
             </Link>
@@ -125,8 +170,8 @@ export default function MyCollectionPage() {
               >
                 <div className="space-y-3">
                   <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-slate-950 border border-slate-800/80">
-                    <img 
-                      src={order.imageUrl} 
+                    <img
+                      src={order.imageUrl}
                       alt={order.productTitle}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-103"
                     />
@@ -155,16 +200,15 @@ export default function MyCollectionPage() {
                       })}
                     </span>
                   </div>
-                  <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/10 px-2 py-0.5 rounded-md font-medium">
-                    Confirmed
-                  </span>
+                  
+                  {getStatusBadge(order.status)}
                 </div>
               </motion.div>
             ))}
           </div>
         )}
-
       </div>
     </div>
   );
 }
+

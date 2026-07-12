@@ -38,8 +38,8 @@ const FeatureCard = ({ icon, title, description }: FeatureCardProps) => (
 
 export default function AboutUsPage() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 px-5 py-15 pt-30 pb-15 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto space-y-20">
+    <div className="min-h-screen bg-slate-950 text-slate-100 py-15 pt-30 pb-15 px-4 md:px-10 sm:px-6 lg:px-8">
+      <div className=" mx-auto space-y-20">
         
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

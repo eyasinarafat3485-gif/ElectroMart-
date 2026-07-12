@@ -78,7 +78,7 @@ const isLoggedIn = !!user;
     { name: "All Items", href: "/all-items", icon: Package },
     { name: "Add Item", href: "/add-item", icon: PlusCircle },
     { name: "My Collection", href: "/my-collection", icon: ShoppingCart },
-    { name: "Manage Items", href: "/items/manage", icon: Settings },
+    { name: "Order Manage", href: "/order-manage", icon: Settings },
     { name: "About Us", href: "/about", icon: Info },
   ];
 

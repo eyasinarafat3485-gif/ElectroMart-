@@ -1,10 +1,9 @@
-
 'use client';
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, ShoppingBag, User, LogOut, ShoppingCart, Package, PlusCircle, Settings, Home, Info, Loader2 } from "lucide-react";
+import { Menu, X, User, LogOut, ShoppingCart, Package, PlusCircle, Settings, Home, Info, Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 import EMLogo from "../../../../../public/ElectroMart.png";
@@ -69,7 +68,7 @@ const isLoggedIn = !!user;
 
   const publicLinks: NavLink[] = [
     { name: "Home", href: "/", icon: Home },
-    { name: "All Items", href: "/all-items", icon: Package  },
+    { name: "All Items", href: "/all-items", icon: Package },
     { name: "My Collection", href: "/my-collection", icon: ShoppingCart },
     { name: "About Us", href: "/about", icon: Info },
   ];

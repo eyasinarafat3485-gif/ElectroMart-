@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronLeft, ChevronRight, Laptop, Smartphone, Watch } from "lucide-react";
 
-// টাইপস্ক্রিপ্টের জন্য স্লাইড ডাটার ইন্টারফেস
 interface Slide {
   id: number;
   title: string;
@@ -19,16 +18,15 @@ interface Slide {
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // রিয়েল ই-কমার্স কন্টেন্ট (কোনো ডামি টেক্সট নেই)
   const slides: Slide[] = [
     {
       id: 1,
       tag: "Limited Edition",
-      title: "Next-Gen Spatial Computing",
+      title: "Next-Gen Computing",
       subtitle: "The Ultimate Workstation",
       description: "Experience professional-grade laptops with Apple M-series and Intel Core i9 processors. Pre-loaded with TypeScript & AI tools.",
-      ctaText: "Shop Laptops",
-      ctaLink: "/explore?category=laptops",
+      ctaText: "View All Items",
+      ctaLink: "/all-items",
       icon: Laptop,
     },
     {
@@ -37,8 +35,8 @@ export default function Hero() {
       title: "Flagship Smartphones",
       subtitle: "Capture Your Universe",
       description: "Unleash revolutionary cameras, 120Hz OLED displays, and all-day battery life. Up to 20% flat discount for online pre-orders.",
-      ctaText: "Explore Phones",
-      ctaLink: "/explore?category=phones",
+      ctaText: "Explore All Products",
+      ctaLink: "/all-items",
       icon: Smartphone,
     },
     {
@@ -47,13 +45,12 @@ export default function Hero() {
       title: "Ecosystem Smartwatches",
       subtitle: "Track Your Evolution",
       description: "Advanced health monitoring, cellular connectivity, and premium titanium build. Syncs flawlessly with your premium devices.",
-      ctaText: "View Wearables",
-      ctaLink: "/explore?category=wearables",
+      ctaText: "View All Watches",
+      ctaLink: "/all-items",
       icon: Watch,
     },
   ];
 
-  // অটো-প্লে স্লাইডার ইফেক্ট (প্রতি ৫ সেকেন্ড পর পর স্লাইড চেঞ্জ হবে)
   useEffect(() => {
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));

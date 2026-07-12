@@ -4,9 +4,14 @@ import React, { useEffect, useState } from 'react';
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Star, ArrowLeft, ShoppingBag, MapPin, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
+import { Star, ArrowLeft, MapPin, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
 import { TbCoinTaka } from "react-icons/tb";
 import ItemCard from '@/app/components/others ui/ItemCard';
+import BuyNowButton from './BuyNowButton'; 
+
+// 🔑 Better Auth এর ক্লায়েন্ট হুক ইমপোর্ট (আপনার প্রোজেক্টের পাথ অনুযায়ী ঠিক করে নিন)
+// উদাহরণ: আপনার ফাইল যদি @/lib/auth-client এ থাকে
+import { authClient } from "@/lib/auth-client"; 
 
 interface ItemDetail {
   _id: string; 
@@ -20,6 +25,14 @@ interface ItemDetail {
   stock: number;
   location: string;
   image: string;
+}
+
+// BuyNowButton এর টাইপের সাথে মিল রেখে ইন্টারফেস ডিফয়ান
+interface UserInfo {
+  _id: string;
+  name: string;
+  email: string;
+  image?: string;
 }
 
 type CategoryType = 'Smartphones' | 'Laptops' | 'Televisions' | 'Headphones' | 'Cameras';
@@ -40,6 +53,17 @@ export default function ItemDetailsPage() {
   const [relatedItems, setRelatedItems] = useState<ItemDetail[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // ⚡ Better Auth থেকে রিয়েল-টাইম সেশন ডাটা রিড করা হচ্ছে
+  const { data: session } = authClient.useSession();
+
+  // ⚡ Better Auth সেশন থেকে ডাইনামিক ইউজার ডাটা অবজেক্ট তৈরি (Fully Type-Safe)
+  const loggedUser: UserInfo | null = session?.user ? {
+    _id: session.user.id || "",     // Better Auth এর আসল ইউজার আইডি
+    name: session.user.name || "",
+    email: session.user.email || "",
+    image: session.user.image || undefined
+  } : null;
 
   useEffect(() => {
     if (!id) return;
@@ -211,19 +235,8 @@ export default function ItemDetailsPage() {
                 </div>
               </div>
 
-              <motion.button
-                whileHover={{ scale: item.stock > 0 ? 1.02 : 1 }}
-                whileTap={{ scale: item.stock > 0 ? 0.98 : 1 }}
-                disabled={item.stock <= 0}
-                className={`w-full flex items-center justify-center gap-3 rounded-2xl p-4 text-base font-bold text-white transition-all duration-300 shadow-lg ${
-                  item.stock > 0 
-                    ? "bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 shadow-cyan-500/10 hover:shadow-cyan-500/20 cursor-pointer" 
-                    : "bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed"
-                }`}
-              >
-                <ShoppingBag size={20} />
-                {item.stock > 0 ? "Buy Now" : "Out of Stock"}
-              </motion.button>
+              {/* সেশন থেকে পাওয়া রিয়েল ডাইনামিক ইউজার ডাটা পাস হচ্ছে */}
+              <BuyNowButton item={item} user={loggedUser} />
             </div>
 
           </motion.div>

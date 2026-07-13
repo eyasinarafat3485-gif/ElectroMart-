@@ -27,8 +27,9 @@ export default async function ProductSection() {
       <div className="max-w-7xl mx-auto ">
         <div className="flex justify-between items-center mb-10">
           <div>
-            <p className="text-indigo-400 uppercase text-sm">Top Picks</p>
-            <h2 className="text-4xl font-bold text-white">
+            <span className="text-indigo-400 text-xs font-semibold tracking-wider uppercase">Top Picks</span>
+       
+            <h2 className="text-4xl font-bold text-white mt-2">
               Trending Collections
             </h2>
           </div>

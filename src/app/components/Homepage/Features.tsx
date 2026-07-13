@@ -99,10 +99,9 @@ export default function Features() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="text-center"
           >
-            <h2 className="text-3xl font-extrabold text-white tracking-tight">
-              Why Choose Us
-            </h2>
-            <p className="text-slate-400 text-sm mt-2">
+            <span className="text-indigo-400 text-xs font-semibold tracking-wider uppercase">Why Choose Us</span>
+           
+            <p className="text-slate-400 mt-2">
               The core values we strictly stand by every single day.
             </p>
           </motion.div>

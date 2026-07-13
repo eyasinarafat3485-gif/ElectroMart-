@@ -13,7 +13,7 @@ interface AddItemFormData {
     rating: number;
     stock: number;
     location: string;
-    imageUrl: string;
+    image: string;
 }
 
 const AddItemPage: React.FC = () => {
@@ -27,7 +27,7 @@ const AddItemPage: React.FC = () => {
         rating: 0,
         stock: 0,
         location: '',
-        imageUrl: '',
+        image: '',
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,10 +65,10 @@ const AddItemPage: React.FC = () => {
             rating: parseFloat(dataFromForm.rating as string) || 0,
             stock: parseInt(dataFromForm.stock as string, 10) || 0,
             location: dataFromForm.location as string,
-            imageUrl: dataFromForm.imageUrl as string,
+            image: dataFromForm.image as string,
         };
 
-        if (!itemsData.title || !itemsData.brand || !itemsData.price || !itemsData.imageUrl) {
+        if (!itemsData.title || !itemsData.brand || !itemsData.price || !itemsData.image) {
             toast.error('Something wrong!');
             setIsSubmitting(false);
             return;
@@ -87,7 +87,7 @@ const AddItemPage: React.FC = () => {
             setFormData({
                 title: '', brand: '', category: '', shortDescription: '',
                 fullDescription: '', price: 0, rating: 0, stock: 0,
-                location: '', imageUrl: ''
+                location: '', image: ''
             });
         } else {
             toast.error("Failed to add the item.");
@@ -244,8 +244,8 @@ const AddItemPage: React.FC = () => {
                             </label>
                             <input
                                 type="url"
-                                name="imageUrl"
-                                value={formData.imageUrl}
+                                name="image"
+                                value={formData?.image}
                                 onChange={handleChange}
                                 required
                                 className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"

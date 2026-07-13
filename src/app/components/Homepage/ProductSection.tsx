@@ -1,5 +1,4 @@
 
-import { Link } from "next/link";
 import ItemCard from "../others ui/ItemCard";
 
 interface Product {
@@ -34,9 +33,9 @@ export default async function ProductSection() {
             </h2>
           </div>
 
-          <Link href="/all-items" className="text-indigo-400">
-            View All Products →
-          </Link>
+          <a href="/all-items" className="text-indigo-400">
+            View All Items →
+          </a>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

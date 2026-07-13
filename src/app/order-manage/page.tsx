@@ -234,8 +234,14 @@ export default function OrderManagePage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
         <div>
-          <h1 className="text-3xl font-bold text-white">Order Management</h1>
-          <p className="text-slate-400 mt-2">
+          <h1 className="mt-6 text-4xl md:text-5xl font-extrabold text-white leading-tight">
+            Order
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+              {" "}
+              Management
+            </span>
+          </h1>
+          <p className="mt-2 text-slate-400 text-lg leading-8">
             Manage every customer order from one place.
           </p>
         </div>

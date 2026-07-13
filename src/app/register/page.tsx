@@ -141,11 +141,12 @@ export default function RegisterPage() {
                 return;
             }
 
-            // ✅ Default Role = user
+            const { data: tokenData } = await authClient.token();
             await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/role`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
+                    "authorization": `Bearer ${tokenData?.token}`,
                 },
                 body: JSON.stringify({
                     email: formData.email,

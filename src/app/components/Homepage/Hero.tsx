@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, ChevronLeft, ChevronRight, Laptop, Smartphone, Watch } from "lucide-react";
+import { ArrowRight, Camera, ChevronLeft, ChevronRight, Laptop, Smartphone, Watch } from "lucide-react";
 
 interface Slide {
   id: number;
@@ -42,12 +42,12 @@ export default function Hero() {
     {
       id: 3,
       tag: "Trending Now",
-      title: "Ecosystem Smartwatches",
+      title: "Ecosystem Smartcamera",
       subtitle: "Track Your Evolution",
       description: "Advanced health monitoring, cellular connectivity, and premium titanium build. Syncs flawlessly with your premium devices.",
       ctaText: "View All Watches",
       ctaLink: "/all-items",
-      icon: Watch,
+      icon: Camera,
     },
   ];
 

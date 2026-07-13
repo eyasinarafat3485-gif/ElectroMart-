@@ -11,6 +11,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import { authClient } from "@/lib/auth-client";
 
 
 type OrderStatus = "pending" | "confirmed" | "delivered" | "rejected";
@@ -68,30 +69,45 @@ export default function OrderManagePage() {
     OrderStatus | "delete" | ""
   >("");
 
+
   const fetchOrders = useCallback(async () => {
-    if (!API) return;
+  if (!API) return;
 
-    try {
-      const res = await fetch(`${API}/orders`);
+  try {
+    const { data: tokenData } = await authClient.token();
 
-      if (!res.ok) {
-        throw new Error(`Failed to load orders (${res.status})`);
-      }
+    const res = await fetch(`${API}/orders`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "authorization": `Bearer ${tokenData?.token}`,
+      },
+    });
 
-      const data: Order[] = await res.json();
-      setOrders(data);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to load orders");
+    if (!res.ok) {
+      throw new Error(`Failed to load orders (${res.status})`);
     }
-  }, []);
 
+    const data: Order[] = await res.json();
+    setOrders(data);
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to load orders");
+  }
+}, []);
 
   const fetchCount = useCallback(async () => {
     if (!API) return;
 
     try {
-      const res = await fetch(`${API}/orders/count`);
+      const { data: tokenData } = await authClient.token();
+      const res = await fetch(`${API}/orders/count`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "authorization": `Bearer ${tokenData?.token}`,
+      },
+    });
 
       if (!res.ok) {
         throw new Error(`Failed to load order count (${res.status})`);
@@ -128,6 +144,7 @@ export default function OrderManagePage() {
     if (!API) return;
 
     try {
+      const { data: tokenData } = await authClient.token();
       setUpdatingId(id);
       setUpdatingAction(status);
 
@@ -135,6 +152,7 @@ export default function OrderManagePage() {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          "authorization": `Bearer ${tokenData?.token}`,
         },
         body: JSON.stringify({ status }),
       });
@@ -166,14 +184,19 @@ export default function OrderManagePage() {
 
   const deleteOrder = async (id: string) => {
     if (!API) return;
-    if (!window.confirm("Delete this order? This cannot be undone.")) return;
+    // if (!window.confirm("Delete this order? This cannot be undone.")) return;
 
     try {
+      const { data: tokenData } = await authClient.token();
       setUpdatingId(id);
       setUpdatingAction("delete");
 
       const res = await fetch(`${API}/orders/${id}`, {
         method: "DELETE",
+         headers: {
+          "Content-Type": "application/json",
+          "authorization": `Bearer ${tokenData?.token}`,
+        },
       });
 
       if (!res.ok) {
@@ -389,13 +412,13 @@ export default function OrderManagePage() {
                             title="Reject order"
                             disabled={isRowBusy || isFinal}
                             onClick={() => {
-                              if (
-                                window.confirm(
-                                  "Reject this order? The customer will not receive it."
-                                )
-                              ) {
+                              // if (
+                              //   // window.confirm(
+                              //   //   "Reject this order? The customer will not receive it."
+                              //   // )
+                              // ) 
                                 updateStatus(order._id, "rejected");
-                              }
+                              
                             }}
                             className="rounded-lg bg-red-600 px-3 py-2 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
                           >

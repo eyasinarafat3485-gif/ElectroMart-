@@ -8,6 +8,7 @@ export async function middleware(request: NextRequest) {
   const session = await auth.api.getSession({
     headers: request.headers,
   });
+  console.log("SESSION:", JSON.stringify(session, null, 2));
 
   const pathname = request.nextUrl.pathname;
 
@@ -23,6 +24,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  console.log("SESSION:", session);
+console.log("USER:", session?.user);
+
 
   if (isAdminOnly && session && session.user?.role !== "admin") {
     const loginUrl = new URL("/login", request.url);
@@ -37,8 +41,10 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/my-collection/:path*",
-    "/all-items/:path*",
+    "/all-items/:path",
     "/add-item/:path*",
     "/order-manage/:path*",
   ],
 };
+
+

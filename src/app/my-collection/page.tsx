@@ -18,7 +18,7 @@ interface OrderItem {
   price: number;
   imageUrl: string;
   orderedAt: string;
-  status?: string; 
+  status?: string;
 }
 
 export default function MyCollectionPage() {
@@ -36,7 +36,20 @@ export default function MyCollectionPage() {
 
     const fetchMyOrders = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/orders?email=${session.user.email}`);
+        setLoading(true);
+
+        const { data: tokenData } = await authClient.token();
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/orders?email=${session.user.email}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "authorization": `Bearer ${tokenData?.token}`,
+            },
+          }
+        );
 
         if (!res.ok) {
           throw new Error("Failed to fetch your collection");
@@ -181,7 +194,7 @@ export default function MyCollectionPage() {
                     <h3 className="text-base font-bold text-white line-clamp-1 group-hover:text-cyan-400 transition-colors">
                       {order.productTitle}
                     </h3>
-                    
+
                     <div className="flex items-center gap-0.5 text-cyan-400 font-extrabold text-lg">
                       <TbCoinTaka size={20} />
                       <span>{order.price.toLocaleString('en-IN')}</span>
@@ -200,7 +213,7 @@ export default function MyCollectionPage() {
                       })}
                     </span>
                   </div>
-                  
+
                   {getStatusBadge(order.status)}
                 </div>
               </motion.div>

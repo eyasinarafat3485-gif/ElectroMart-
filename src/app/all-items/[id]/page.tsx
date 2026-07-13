@@ -7,12 +7,12 @@ import { motion } from "framer-motion";
 import { Star, ArrowLeft, MapPin, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
 import { TbCoinTaka } from "react-icons/tb";
 import ItemCard from '@/app/components/others ui/ItemCard';
-import BuyNowButton from './BuyNowButton'; 
+import BuyNowButton from './BuyNowButton';
 
-import { authClient } from "@/lib/auth-client"; 
+import { authClient } from "@/lib/auth-client";
 
 interface ItemDetail {
-  _id: string; 
+  _id: string;
   title: string;
   brand: string;
   category: string;
@@ -44,7 +44,7 @@ const categoryColors: Record<CategoryType, string> = {
 
 export default function ItemDetailsPage() {
   const params = useParams();
-  const id = params?.id as string; 
+  const id = params?.id as string;
 
   const [item, setItem] = useState<ItemDetail | null>(null);
   const [relatedItems, setRelatedItems] = useState<ItemDetail[]>([]);
@@ -53,8 +53,10 @@ export default function ItemDetailsPage() {
 
   const { data: session } = authClient.useSession();
 
+
+
   const loggedUser: UserInfo | null = session?.user ? {
-    _id: session.user.id || "",     
+    _id: session.user.id || "",
     name: session.user.name || "",
     email: session.user.email || "",
     image: session.user.image || undefined
@@ -64,14 +66,23 @@ export default function ItemDetailsPage() {
     if (!id) return;
 
     const fetchItemDetails = async () => {
+      const { data: tokenData } = await authClient.token();
+      console.log(tokenData);
       try {
         setLoading(true);
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/items/${id}`); 
-        
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/items/${id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "authorization": `Bearer ${tokenData?.token}`,
+          },
+        });
+
         if (!res.ok) {
           throw new Error("Failed to fetch product details");
         }
-        
+
         const data = await res.json();
         setItem(data);
       } catch (err: any) {
@@ -80,7 +91,6 @@ export default function ItemDetailsPage() {
         setLoading(false);
       }
     };
-
     fetchItemDetails();
   }, [id]);
 
@@ -89,7 +99,18 @@ export default function ItemDetailsPage() {
 
     const fetchRelatedItems = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/items?category=${item.category}`);
+        const { data: tokenData } = await authClient.token();
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/items?category=${item.category}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "authorization": `Bearer ${tokenData?.token}`,
+            },
+          }
+        );
         if (res.ok) {
           const data: ItemDetail[] = await res.json();
           const filtered = data
@@ -132,10 +153,10 @@ export default function ItemDetailsPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        
+
         <div className="mb-8">
-          <Link 
-            href="/all-items" 
+          <Link
+            href="/all-items"
             className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-cyan-400 transition-colors group"
           >
             <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
@@ -145,15 +166,15 @@ export default function ItemDetailsPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6 md:p-8 backdrop-blur-sm shadow-2xl">
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             className="lg:col-span-5 flex flex-col justify-center"
           >
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 group">
-              <img 
-                src={item.image} 
+              <img
+                src={item.image}
                 alt={item.title}
                 className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
               />
@@ -163,7 +184,7 @@ export default function ItemDetailsPage() {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
@@ -242,7 +263,7 @@ export default function ItemDetailsPage() {
             <h2 className="text-2xl font-extrabold text-white tracking-tight border-b border-slate-800/60 pb-3">
               Related Products <span className="text-cyan-400">({item.category})</span>
             </h2>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {relatedItems.map((relatedItem) => (
                 <ItemCard key={relatedItem._id} item={relatedItem} />

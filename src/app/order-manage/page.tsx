@@ -71,30 +71,30 @@ export default function OrderManagePage() {
 
 
   const fetchOrders = useCallback(async () => {
-  if (!API) return;
+    if (!API) return;
 
-  try {
-    const { data: tokenData } = await authClient.token();
+    try {
+      const { data: tokenData } = await authClient.token();
 
-    const res = await fetch(`${API}/orders`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "authorization": `Bearer ${tokenData?.token}`,
-      },
-    });
+      const res = await fetch(`${API}/orders`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "authorization": `Bearer ${tokenData?.token}`,
+        },
+      });
 
-    if (!res.ok) {
-      throw new Error(`Failed to load orders (${res.status})`);
+      if (!res.ok) {
+        throw new Error(`Failed to load orders (${res.status})`);
+      }
+
+      const data: Order[] = await res.json();
+      setOrders(data);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load orders");
     }
-
-    const data: Order[] = await res.json();
-    setOrders(data);
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to load orders");
-  }
-}, []);
+  }, []);
 
   const fetchCount = useCallback(async () => {
     if (!API) return;
@@ -102,12 +102,12 @@ export default function OrderManagePage() {
     try {
       const { data: tokenData } = await authClient.token();
       const res = await fetch(`${API}/orders/count`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "authorization": `Bearer ${tokenData?.token}`,
-      },
-    });
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "authorization": `Bearer ${tokenData?.token}`,
+        },
+      });
 
       if (!res.ok) {
         throw new Error(`Failed to load order count (${res.status})`);
@@ -193,7 +193,7 @@ export default function OrderManagePage() {
 
       const res = await fetch(`${API}/orders/${id}`, {
         method: "DELETE",
-         headers: {
+        headers: {
           "Content-Type": "application/json",
           "authorization": `Bearer ${tokenData?.token}`,
         },
@@ -324,22 +324,25 @@ export default function OrderManagePage() {
 
                       {/* Customer */}
                       <td className="px-6 py-5">
-                        <div className="flex items-center gap-3">
-                          <Image
-                            src={order.userImage || "/placeholder.png"}
-                            alt={order.userName}
-                            width={36}
-                            height={36}
-                            className="rounded-full border border-slate-700 object-cover"
-                            unoptimized
-                          />
-                          <div>
-                            <h4 className="font-medium text-white">
+                        <div className="flex items-center gap-4">
+                          <div className="relative h-11 w-11 overflow-hidden rounded-full ring-2 ring-slate-700 shadow-md shrink-0">
+                            <Image
+                              src={order.userImage || "/placeholder.png"}
+                              alt={order.userName}
+                              fill
+                              className="object-cover object-center"
+                              unoptimized
+                            />
+                          </div>
+
+                          <div className="min-w-0">
+                            <h4 className="truncate font-semibold text-white">
                               {order.userName}
                             </h4>
+
                             <a
                               href={`mailto:${order.userEmail}`}
-                              className="block text-sm text-cyan-400 hover:underline"
+                              className="block truncate text-sm text-cyan-400 hover:text-cyan-300 hover:underline transition-colors"
                             >
                               {order.userEmail}
                             </a>
@@ -417,8 +420,8 @@ export default function OrderManagePage() {
                               //   //   "Reject this order? The customer will not receive it."
                               //   // )
                               // ) 
-                                updateStatus(order._id, "rejected");
-                              
+                              updateStatus(order._id, "rejected");
+
                             }}
                             className="rounded-lg bg-red-600 px-3 py-2 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
                           >

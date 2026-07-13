@@ -140,12 +140,15 @@ export default function MyCollectionPage() {
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6 mb-10">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
-              <ShoppingBag className="text-cyan-400" size={28} />
-              My <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Collection</span>
-            </h1>
+            <h1 className="mt-6 text-4xl md:text-5xl font-extrabold text-white leading-tight">
+                        My
+                        <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                            {" "}
+                            Collection
+                        </span>
+                    </h1>
             <p className="text-sm text-slate-400 mt-1">
-              Welcome back, <span className="text-slate-200 font-medium">{session.user.name}</span>. Review all your ordered items below.
+              Welcome back, <span className="text-blue-500 text-lg font-medium">{session.user.name}</span>. Review all your ordered items below.
             </p>
           </div>
           <div className="bg-slate-900/80 border border-slate-800 px-4 py-2 rounded-2xl text-xs md:text-sm text-slate-400 w-fit">

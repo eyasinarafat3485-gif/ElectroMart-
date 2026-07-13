@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "./lib/auth";
@@ -10,16 +9,25 @@ export async function middleware(request: NextRequest) {
     headers: request.headers,
   });
 
-  const protectedRoutes = ["/my-collection", "/all-items"];
+  const pathname = request.nextUrl.pathname;
 
-  const isProtected = protectedRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  );
+  const commonProtectedRoutes = ["/my-collection", "/all-items"];
+  const adminOnlyRoutes = ["/add-item", "/order-manage"];
 
-  if (isProtected && !session) {
+  const isCommonProtected = commonProtectedRoutes.some((route) => pathname.startsWith(route));
+  const isAdminOnly = adminOnlyRoutes.some((route) => pathname.startsWith(route));
+
+  if ((isCommonProtected || isAdminOnly) && !session) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("callbackUrl", request.url);
+    return NextResponse.redirect(loginUrl);
+  }
 
+
+  if (isAdminOnly && session && session.user?.role !== "admin") {
+    const loginUrl = new URL("/login", request.url);
+
+    loginUrl.searchParams.set("callbackUrl", request.url);
     return NextResponse.redirect(loginUrl);
   }
 
@@ -29,6 +37,8 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/my-collection/:path*",
-    "/all-items/:path",
+    "/all-items/:path*",
+    "/add-item/:path*",
+    "/order-manage/:path*",
   ],
-};;
+};

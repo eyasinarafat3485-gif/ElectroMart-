@@ -136,8 +136,8 @@ export default function RegisterPage() {
             });
 
             if (signUpError) {
-                setError(signUpError.message);
-                toast.error(signUpError.message);
+                setError(signUpError.message ?? "Failed to create account. Please try again.");
+                toast.error(signUpError.message ?? "Failed to create account. Please try again.");
                 return;
             }
 
@@ -177,13 +177,12 @@ export default function RegisterPage() {
 
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    
+
                     {/* 📸 Profile Image Upload UI */}
                     <div
                         onClick={() => fileInputRef.current?.click()}
-                        className={`flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-slate-800/40 border transition-all cursor-pointer group ${
-                            imagePreview ? "border-blue-500/50 bg-slate-800/60" : "border-slate-700 hover:border-slate-600"
-                        }`}
+                        className={`flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-slate-800/40 border transition-all cursor-pointer group ${imagePreview ? "border-blue-500/50 bg-slate-800/60" : "border-slate-700 hover:border-slate-600"
+                            }`}
                     >
                         <input
                             type="file"

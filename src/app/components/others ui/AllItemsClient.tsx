@@ -11,50 +11,56 @@ interface AllItemsClientProps {
     initialItems: Item[];
 }
 
-const AllItemsPage = ({ initialItems = [] }: AllItemsClientProps) => {
-    const [searchQuery, setSearchQuery] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState("All");
+const AllItemsClient = ({ initialItems = [] }: AllItemsClientProps) => {
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [selectedCategory, setSelectedCategory] = useState<string>("All");
+    const [maxPrice, setMaxPrice] = useState<number>(5000);
+    const [sortBy, setSortBy] = useState<string>("default");
+    const [currentPage, setCurrentPage] = useState<number>(1);
 
+    const itemsPerPage = 8;
+
+    // Calculate max available price
     const maxAvailablePrice = useMemo(() => {
         if (!initialItems.length) return 5000;
         return Math.max(...initialItems.map((item) => Number(item?.price) || 0), 5000);
     }, [initialItems]);
 
-    const [maxPrice, setMaxPrice] = useState<number>(5000);
-    const [sortBy, setSortBy] = useState("default");
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const itemsPerPage = 8;
-
+    // Update maxPrice when maxAvailablePrice changes
     useEffect(() => {
-        if (maxAvailablePrice) {
-            setMaxPrice(maxAvailablePrice);
-        }
+        setMaxPrice(maxAvailablePrice);
     }, [maxAvailablePrice]);
 
+    // Get unique categories
     const categories = useMemo(() => {
-        if (!initialItems) return ["All"];
+        if (!initialItems.length) return ["All"];
         const allCats = initialItems.map((item) => item?.category).filter(Boolean);
         return ["All", ...Array.from(new Set(allCats))];
     }, [initialItems]);
 
+    // Filter, search & sort logic
     const filteredAndSortedItems = useMemo(() => {
         let result = [...initialItems];
 
+        // Search
         if (searchQuery.trim() !== "") {
+            const query = searchQuery.toLowerCase();
             result = result.filter(
                 (item) =>
-                    item?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    item?.brand?.toLowerCase().includes(searchQuery.toLowerCase())
+                    item?.title?.toLowerCase().includes(query) ||
+                    item?.brand?.toLowerCase().includes(query)
             );
         }
 
+        // Category filter
         if (selectedCategory !== "All") {
             result = result.filter((item) => item?.category === selectedCategory);
         }
 
+        // Price filter
         result = result.filter((item) => (Number(item?.price) || 0) <= maxPrice);
 
+        // Sorting
         if (sortBy === "price-low") {
             result.sort((a, b) => (Number(a?.price) || 0) - (Number(b?.price) || 0));
         } else if (sortBy === "price-high") {
@@ -71,14 +77,14 @@ const AllItemsPage = ({ initialItems = [] }: AllItemsClientProps) => {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredAndSortedItems.slice(indexOfFirstItem, indexOfLastItem);
 
+    // Reset to page 1 when filters change
     useEffect(() => {
         setCurrentPage(1);
     }, [searchQuery, selectedCategory, maxPrice, sortBy]);
 
     return (
-        <div className="bg-slate-950 min-h-screen ">
+        <div className="bg-slate-950 min-h-screen">
             <div className="max-w-7xl mx-auto px-4 md:px-10 py-15 pt-30 pb-15">
-
                 {/* Header Section */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -125,9 +131,9 @@ const AllItemsPage = ({ initialItems = [] }: AllItemsClientProps) => {
                     </div>
                 </motion.div>
 
+                {/* Filters */}
                 <div className="mt-16 bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
                     <div className="flex flex-col lg:flex-row gap-4 justify-between items-center">
-
                         <div className="relative w-full lg:max-w-md">
                             <Search className="absolute left-4 top-3.5 h-5 w-5 text-slate-500" />
                             <input
@@ -140,7 +146,7 @@ const AllItemsPage = ({ initialItems = [] }: AllItemsClientProps) => {
                         </div>
 
                         <div className="flex flex-wrap gap-4 w-full lg:w-auto items-center">
-
+                            {/* Category Filter */}
                             <div className="flex flex-col min-w-[150px] w-full sm:w-auto">
                                 <select
                                     value={selectedCategory}
@@ -155,6 +161,7 @@ const AllItemsPage = ({ initialItems = [] }: AllItemsClientProps) => {
                                 </select>
                             </div>
 
+                            {/* Price Range */}
                             <div className="flex items-center gap-3 bg-slate-950 px-4 py-3 rounded-xl border border-slate-800 w-full sm:w-auto">
                                 <span className="text-xs text-slate-400 whitespace-nowrap flex items-center gap-1">
                                     Max Price: <TbCoinTaka className="w-4 h-4" /> {maxPrice}
@@ -170,23 +177,24 @@ const AllItemsPage = ({ initialItems = [] }: AllItemsClientProps) => {
                                 />
                             </div>
 
+                            {/* Sort By */}
                             <div className="flex flex-col min-w-[160px] w-full sm:w-auto">
                                 <select
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value)}
                                     className="bg-slate-950 text-slate-300 px-4 py-3 rounded-xl border border-slate-800 focus:outline-none focus:border-cyan-500 transition-colors cursor-pointer"
                                 >
-                                    <option value="default">Default </option>
+                                    <option value="default">Default</option>
                                     <option value="price-low">Price: Low to High</option>
                                     <option value="price-high">Price: High to Low</option>
                                     <option value="rating">Top Rated</option>
                                 </select>
                             </div>
-
                         </div>
                     </div>
                 </div>
 
+                {/* Items Grid */}
                 {currentItems.length > 0 ? (
                     <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                         {currentItems.map((item) => (
@@ -199,6 +207,7 @@ const AllItemsPage = ({ initialItems = [] }: AllItemsClientProps) => {
                     </div>
                 )}
 
+                {/* Pagination */}
                 {totalPages > 1 && (
                     <div className="mt-16 flex items-center justify-center gap-2">
                         <button
@@ -213,10 +222,11 @@ const AllItemsPage = ({ initialItems = [] }: AllItemsClientProps) => {
                             <button
                                 key={index + 1}
                                 onClick={() => setCurrentPage(index + 1)}
-                                className={`w-11 h-11 rounded-xl text-sm font-semibold transition-colors ${currentPage === index + 1
-                                    ? "bg-cyan-500 text-white"
-                                    : "border border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white"
-                                    }`}
+                                className={`w-11 h-11 rounded-xl text-sm font-semibold transition-colors ${
+                                    currentPage === index + 1
+                                        ? "bg-cyan-500 text-white"
+                                        : "border border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white"
+                                }`}
                             >
                                 {index + 1}
                             </button>
@@ -231,10 +241,9 @@ const AllItemsPage = ({ initialItems = [] }: AllItemsClientProps) => {
                         </button>
                     </div>
                 )}
-
             </div>
         </div>
     );
 };
 
-export default AllItemsPage;
+export default AllItemsClient;

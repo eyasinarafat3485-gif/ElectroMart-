@@ -30,12 +30,9 @@ const AddItemPage: React.FC = () => {
         image: '',
     });
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [message] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-    ) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 
         setFormData(prev => ({
@@ -50,52 +47,55 @@ const AddItemPage: React.FC = () => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const rawFormData = new FormData(e.currentTarget);
-        const dataFromForm = Object.fromEntries(rawFormData.entries());
+        try {
+            const itemsData: AddItemFormData = {
+                title: formData.title.trim(),
+                brand: formData.brand.trim(),
+                category: formData.category.trim(),
+                shortDescription: formData.shortDescription.trim(),
+                fullDescription: formData.fullDescription.trim(),
+                price: formData.price,
+                rating: formData.rating,
+                stock: formData.stock,
+                location: formData.location.trim(),
+                image: formData.image.trim(),
+            };
 
-        console.log(dataFromForm);
+            // Basic validation
+            if (!itemsData.title || !itemsData.brand || !itemsData.price || !itemsData.image) {
+                toast.error('Title, Brand, Price, and Image URL are required!');
+                setIsSubmitting(false);
+                return;
+            }
 
-        const itemsData: AddItemFormData = {
-            title: dataFromForm.title as string,
-            brand: dataFromForm.brand as string,
-            category: dataFromForm.category as string,
-            shortDescription: dataFromForm.shortDescription as string,
-            fullDescription: dataFromForm.fullDescription as string,
-            price: parseFloat(dataFromForm.price as string) || 0,
-            rating: parseFloat(dataFromForm.rating as string) || 0,
-            stock: parseInt(dataFromForm.stock as string, 10) || 0,
-            location: dataFromForm.location as string,
-            image: dataFromForm.image as string,
-        };
-
-        if (!itemsData.title || !itemsData.brand || !itemsData.price || !itemsData.image) {
-            toast.error('Something wrong!');
-            setIsSubmitting(false);
-            return;
-        }
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/items`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(itemsData),
-        });
-
-        setIsSubmitting(false);
-        if (response.ok) {
-            toast.success("Your item is successfully added.");
-
-            setFormData({
-                title: '', brand: '', category: '', shortDescription: '',
-                fullDescription: '', price: 0, rating: 0, stock: 0,
-                location: '', image: ''
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/items`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(itemsData),
             });
-        } else {
-            toast.error("Failed to add the item.");
+
+            if (response.ok) {
+                toast.success("Product added successfully to inventory!");
+
+                // Reset form
+                setFormData({
+                    title: '', brand: '', category: '', shortDescription: '',
+                    fullDescription: '', price: 0, rating: 0, stock: 0,
+                    location: '', image: ''
+                });
+            } else {
+                toast.error("Failed to add the item. Please try again.");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Something went wrong. Please check your connection.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-200 pt-30 pb-15 px-4">
+        <div className="min-h-screen bg-slate-950 text-slate-200 pt-32 pb-20 px-4">
             <div className="max-w-3xl mx-auto">
                 <div className="bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-10">
                     <div className="text-center mb-10">
@@ -153,7 +153,7 @@ const AddItemPage: React.FC = () => {
                                 </select>
                             </div>
 
-                            {/* Price & Rating */}
+                            {/* Price */}
                             <div>
                                 <label className="block text-sm font-medium text-slate-400 mb-2">Price (৳) <span className="text-red-500">*</span></label>
                                 <input
@@ -169,6 +169,7 @@ const AddItemPage: React.FC = () => {
                                 />
                             </div>
 
+                            {/* Rating */}
                             <div>
                                 <label className="block text-sm font-medium text-slate-400 mb-2">Initial Rating (0-5)</label>
                                 <input
@@ -184,7 +185,7 @@ const AddItemPage: React.FC = () => {
                                 />
                             </div>
 
-                            {/* Stock & Location */}
+                            {/* Stock */}
                             <div>
                                 <label className="block text-sm font-medium text-slate-400 mb-2">Stock Quantity</label>
                                 <input
@@ -198,6 +199,7 @@ const AddItemPage: React.FC = () => {
                                 />
                             </div>
 
+                            {/* Location */}
                             <div>
                                 <label className="block text-sm font-medium text-slate-400 mb-2">Location / Warehouse</label>
                                 <input
@@ -206,7 +208,7 @@ const AddItemPage: React.FC = () => {
                                     value={formData.location}
                                     onChange={handleChange}
                                     className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-                                    placeholder="Dhaka Warehouse / Available in BD"
+                                    placeholder="Dhaka, Bangladesh"
                                 />
                             </div>
                         </div>
@@ -245,13 +247,12 @@ const AddItemPage: React.FC = () => {
                             <input
                                 type="url"
                                 name="image"
-                                value={formData?.image}
+                                value={formData.image}
                                 onChange={handleChange}
                                 required
                                 className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-                                placeholder="https://example.com/product.jpg"
+                                placeholder="https://images.unsplash.com/..."
                             />
-
                         </div>
 
                         {/* Submit Button */}
@@ -270,15 +271,6 @@ const AddItemPage: React.FC = () => {
                             )}
                         </button>
                     </form>
-
-                    {message && (
-                        <div className={`mt-6 p-4 rounded-2xl text-center font-medium border ${message.type === 'success'
-                            ? 'bg-green-900/30 border-green-700 text-green-400'
-                            : 'bg-red-900/30 border-red-700 text-red-400'
-                            }`}>
-                            {message.text}
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

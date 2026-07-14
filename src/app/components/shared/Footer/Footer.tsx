@@ -2,14 +2,15 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, MapPin, Phone, ArrowUp } from "lucide-react";
 import { FaFacebook, FaGithub, FaLinkedin } from "react-icons/fa6";
+
 import EMLogo from "../../../../../public/ElectroMart.png";
-import Image from "next/image";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -38,7 +39,12 @@ export default function Footer() {
           
           <div className="space-y-4">
             <Link href="/" className="flex items-center space-x-2 text-white font-bold text-xl">
-             <Image src={EMLogo} alt="ElectroMart Logo" className="h-9 w-9 rounded-full " />
+              <Image 
+                src={EMLogo} 
+                alt="ElectroMart Logo" 
+                className="h-9 w-9 rounded-full" 
+                priority 
+              />
               <span>Electro<span className="text-indigo-500">Mart</span></span>
             </Link>
             <p className="text-sm leading-relaxed text-slate-400">

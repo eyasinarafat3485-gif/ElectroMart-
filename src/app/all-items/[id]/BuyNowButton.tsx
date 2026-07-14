@@ -1,8 +1,7 @@
-
 "use client";
 
 import React, { useState } from 'react';
-import { useRouter } from "next/navigation"; // ⚡ রিডাইরেক্ট করার জন্য ইমপোর্ট করা হয়েছে
+import { useRouter } from "next/navigation"; 
 import { motion } from "framer-motion";
 import { IoCartOutline } from 'react-icons/io5';
 import { Loader2 } from "lucide-react";
@@ -36,8 +35,8 @@ interface BuyNowButtonProps {
 }
 
 export default function BuyNowButton({ item, user }: BuyNowButtonProps) {
-  const [isOrdering, setIsOrdering] = useState(false);
-  const router = useRouter(); // ⚡ রাউটার ইনিশিয়ালাইজ করা হয়েছে
+  const [isOrdering, setIsOrdering] = useState<boolean>(false);
+  const router = useRouter(); 
 
   const handleBuyNow = async () => {
     if (!user) {
@@ -61,6 +60,7 @@ export default function BuyNowButton({ item, user }: BuyNowButtonProps) {
 
     try {
       const { data: tokenData } = await authClient.token();
+      
       const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/orders`, {
         method: "POST",
         headers: {
@@ -73,7 +73,6 @@ export default function BuyNowButton({ item, user }: BuyNowButtonProps) {
       if (res.ok) {
         toast.success("Order successfully done!");
         
-        // ⚡ অর্ডার সফল হলে ১.৫ সেকেন্ড পর ইউজারকে কালেকশন পেজে নিয়ে যাবে
         setTimeout(() => {
           router.push("/my-collection");
         }, 1500);

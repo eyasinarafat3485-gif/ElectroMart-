@@ -1,4 +1,3 @@
-
 import ItemCard from "../others ui/ItemCard";
 
 interface Product {
@@ -20,21 +19,27 @@ export default async function ProductSection() {
     }
   );
 
+  if (!res.ok) {
+    throw new Error("Failed to fetch products");
+  }
+
   const products: Product[] = await res.json();
 
   return (
-    <section className="py-15 bg-slate-950 px-4 md:px-10 ">
-      <div className="max-w-7xl mx-auto ">
+    <section className="py-15 bg-slate-950 px-4 md:px-10">
+      <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-10">
           <div>
             <span className="text-indigo-400 text-xs font-semibold tracking-wider uppercase">Top Picks</span>
-       
             <h2 className="text-4xl font-bold text-white mt-2">
               Trending Collections
             </h2>
           </div>
 
-          <a href="/all-items" className="text-indigo-400">
+          <a 
+            href="/all-items" 
+            className="text-indigo-400 hover:text-indigo-300 transition-colors"
+          >
             View All Items →
           </a>
         </div>

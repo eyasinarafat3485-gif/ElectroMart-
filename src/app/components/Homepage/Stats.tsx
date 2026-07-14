@@ -1,9 +1,14 @@
-// components/home/Stats.tsx
 'use client';
+
 import { useEffect, useState } from 'react';
 
-function Counter({ end, suffix = "" }: { end: number; suffix?: string }) {
-  const [count, setCount] = useState(0);
+interface CounterProps {
+  end: number;
+  suffix?: string;
+}
+
+function Counter({ end, suffix = "" }: CounterProps) {
+  const [count, setCount] = useState<number>(0);
 
   useEffect(() => {
     let start = 0;
@@ -29,10 +34,12 @@ function Counter({ end, suffix = "" }: { end: number; suffix?: string }) {
 export default function Stats() {
   return (
     <section className="bg-slate-950 py-15 border-slate-900">
-        
       <div className="text-center mb-12">
-          <span className="text-indigo-400 text-xs font-semibold tracking-wider uppercase">Trusted By Thousands Across Bangladesh </span>
-        </div>
+        <span className="text-indigo-400 text-xs font-semibold tracking-wider uppercase">
+          Trusted By Thousands Across Bangladesh
+        </span>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           
@@ -57,8 +64,6 @@ export default function Stats() {
           </div>
 
         </div>
-
-        
       </div>
     </section>
   );

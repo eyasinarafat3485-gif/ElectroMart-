@@ -17,13 +17,14 @@ const categoryColors: Record<CategoryType, string> = {
     Cameras: 'bg-red-500 text-white',
 };
 
-interface Props {
+interface ItemCardProps {
     item: Item;
 }
 
-export default function ItemCard({ item }: Props) {
+export default function ItemCard({ item }: ItemCardProps) {
    
-    const currentCategoryColor = categoryColors[item.category as CategoryType] || 'bg-gray-500 text-white';
+    const currentCategoryColor = 
+        categoryColors[item.category as CategoryType] || 'bg-gray-500 text-white';
 
     return (
         <motion.div
@@ -39,7 +40,7 @@ export default function ItemCard({ item }: Props) {
                 y: -10,
             }}
             transition={{
-                duration: .5,
+                duration: 0.5,
             }}
             viewport={{
                 once: true,
@@ -49,9 +50,9 @@ export default function ItemCard({ item }: Props) {
             <div className="relative overflow-hidden">
                 <img
                     src={item?.image}
-                    alt={item.name || "Product"}
+                    alt={item?.title || "Product"}
                     className="w-full h-60 object-cover rounded-xl"
-                    onError={() => console.log("Image failed:", item.image)}
+                    onError={() => console.log("Image failed to load:", item?.image)}
                 />
 
                 <div className={`absolute right-3 top-3 rounded-full px-3 py-1 text-xs font-semibold shadow-lg ${currentCategoryColor}`}>
@@ -62,63 +63,43 @@ export default function ItemCard({ item }: Props) {
             <div className="space-y-5 p-5">
 
                 <div>
-
                     <h2 className="line-clamp-1 text-xl font-bold text-white">
-                        {item.name}
-                    </h2>
-
-                    <p className="mt-3 line-clamp-2 text-sm leading-7 text-slate-400">
-                        {item.description}
-                    </p>
-
-                </div>
-                <h2 className="line-clamp-1 text-xl font-semibold text-white">
                         {item.title}
                     </h2>
 
+                    <p className="mt-3 line-clamp-2 text-sm leading-7 text-slate-400">
+                        {item.shortDescription || item.description}
+                    </p>
+                </div>
+
                 <div className="flex items-center justify-between">
-                    
-
                     <div className="flex items-center gap-2">
-
                         <TbCoinTaka
                             className="text-cyan-400"
                             size={18}
                         />
-
                         <span className="text-lg font-bold text-cyan-400">
                             {item.price}
                         </span>
-
                     </div>
 
                     <div className="flex items-center gap-1">
-
                         <Star
                             size={18}
                             className="fill-yellow-400 text-yellow-400"
                         />
-
                         <span className="font-semibold text-white">
                             {item.rating}
                         </span>
-
                     </div>
-
                 </div>
 
                 <div className="flex items-center justify-between border-t border-slate-800 pt-4">
-
                     <div>
-
-                        <p className="text-xs text-slate-500">
-                            Brand
-                        </p>
-
+                        <p className="text-xs text-slate-500">Brand</p>
                         <p className="font-semibold text-white">
                             {item.brand}
                         </p>
-
                     </div>
 
                     <Link

@@ -1,22 +1,28 @@
 "use client";
 
+import React, { useState } from 'react';
 import Link from "next/link";
-import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 import { toast } from "react-toastify";
 import { authClient } from "@/lib/auth-client";
 
+interface FormData {
+    email: string;
+    password: string;
+}
+
 export default function LoginPage() {
     const router = useRouter();
-    const [formData, setFormData] = useState({
+
+    const [formData, setFormData] = useState<FormData>({
         email: "",
         password: "",
     });
 
-    const [showPassword, setShowPassword] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -28,7 +34,6 @@ export default function LoginPage() {
 
         setError("");
     };
-
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -78,31 +83,23 @@ export default function LoginPage() {
             <div className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900 p-10 shadow-2xl">
 
                 {/* Heading */}
-
                 <div className="text-center mb-10">
                     <h1 className="text-4xl font-bold text-white">
                         Welcome Back
                     </h1>
-
                     <p className="mt-3 text-slate-400">
                         Login to your ElectroMart account
                     </p>
                 </div>
 
                 {/* Form */}
-
-                <form
-                    onSubmit={handleSubmit}
-                    className="space-y-6"
-                >
+                <form onSubmit={handleSubmit} className="space-y-6">
 
                     {/* Email */}
-
                     <div>
                         <label className="block mb-2 text-sm font-medium text-slate-400">
                             Email Address
                         </label>
-
                         <input
                             type="email"
                             name="email"
@@ -114,14 +111,11 @@ export default function LoginPage() {
                     </div>
 
                     {/* Password */}
-
                     <div>
                         <label className="block mb-2 text-sm font-medium text-slate-400">
                             Password
                         </label>
-
                         <div className="relative">
-
                             <input
                                 type={showPassword ? "text" : "password"}
                                 name="password"
@@ -133,9 +127,7 @@ export default function LoginPage() {
 
                             <button
                                 type="button"
-                                onClick={() =>
-                                    setShowPassword(!showPassword)
-                                }
+                                onClick={() => setShowPassword(!showPassword)}
                                 className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
                             >
                                 {showPassword ? (
@@ -144,20 +136,17 @@ export default function LoginPage() {
                                     <Eye size={20} />
                                 )}
                             </button>
-
                         </div>
                     </div>
 
                     {/* Error */}
-
                     {error && (
                         <div className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
                             {error}
                         </div>
                     )}
 
-                    {/* Login */}
-
+                    {/* Login Button */}
                     <button
                         type="submit"
                         disabled={loading}
@@ -173,20 +162,9 @@ export default function LoginPage() {
                         )}
                     </button>
 
-                    {/* Demo Login */}
-
-                    <button
-                        type="button"
-                        disabled
-                        className="w-full rounded-2xl border border-slate-700 py-4 font-semibold text-slate-500 cursor-not-allowed"
-                    >
-                        ⚡ Demo Login (Coming Soon)
-                    </button>
-
                 </form>
 
                 {/* Bottom */}
-
                 <div className="mt-8 text-center text-slate-400">
                     Don't have an account?{" "}
                     <Link

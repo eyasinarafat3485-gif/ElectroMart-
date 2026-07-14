@@ -11,15 +11,13 @@ interface Feature {
   icon: React.ReactNode;
 }
 
-function FeatureCard({
-  icon,
-  title,
-  description,
-}: {
+interface FeatureCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
-}) {
+}
+
+function FeatureCard({ icon, title, description }: FeatureCardProps) {
   return (
     <motion.div
       variants={{
@@ -105,6 +103,7 @@ export default function Features() {
               The core values we strictly stand by every single day.
             </p>
           </motion.div>
+
           <motion.div
             variants={containerVariants}
             initial="hidden"

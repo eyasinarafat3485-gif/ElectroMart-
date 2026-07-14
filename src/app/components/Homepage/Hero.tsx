@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, Camera, ChevronLeft, ChevronRight, Laptop, Smartphone, Watch } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { Laptop, Smartphone, Camera } from "lucide-react";
 
 interface Slide {
   id: number;
@@ -16,7 +17,7 @@ interface Slide {
 }
 
 export default function Hero() {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState<number>(0);
 
   const slides: Slide[] = [
     {
@@ -27,7 +28,7 @@ export default function Hero() {
       description: "Experience professional-grade laptops with Apple M-series and Intel Core i9 processors. Pre-loaded with TypeScript & AI tools.",
       ctaText: "View All Items",
       ctaLink: "/all-items",
-      icon: Laptop,
+      icon: Laptop, 
     },
     {
       id: 2,
@@ -55,6 +56,7 @@ export default function Hero() {
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
     }, 5000);
+
     return () => clearInterval(slideInterval);
   }, [slides.length]);
 
@@ -70,7 +72,6 @@ export default function Hero() {
 
   return (
     <section className="relative h-[60vh] md:h-[76vh] w-full bg-slate-950 overflow-hidden border-slate-900 pt-10 md:pt-25 flex items-center">
-
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff02_1px,transparent_1px),linear-gradient(to_bottom,#ffffff02_1px,transparent_1px)] bg-[size:35px_35px]" />
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-600/10 blur-[150px] rounded-full pointer-events-none" />
 
@@ -120,6 +121,7 @@ export default function Hero() {
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
+
       <button
         onClick={nextSlide}
         className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-slate-900/60 border border-slate-800 rounded-xl hover:bg-indigo-600 hover:text-white text-slate-400 transition-colors z-20"
@@ -140,7 +142,6 @@ export default function Hero() {
           />
         ))}
       </div>
-
     </section>
   );
 }

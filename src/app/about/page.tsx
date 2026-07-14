@@ -23,7 +23,11 @@ interface FeatureCardProps {
   description: string;
 }
 
-const FeatureCard = ({ icon, title, description }: FeatureCardProps) => (
+const FeatureCard: React.FC<FeatureCardProps> = ({ 
+  icon, 
+  title, 
+  description 
+}) => (
   <motion.div
     whileHover={{ y: -5 }}
     className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm shadow-xl flex flex-col items-center text-center space-y-3"
@@ -36,11 +40,12 @@ const FeatureCard = ({ icon, title, description }: FeatureCardProps) => (
   </motion.div>
 );
 
-export default function AboutUsPage() {
+export default function AboutUsPage(): React.JSX.Element {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 py-15 pt-30 pb-15 px-4 md:px-10 sm:px-6 lg:px-8">
-      <div className=" mx-auto space-y-20">
+      <div className="mx-auto max-w-7xl space-y-20">
         
+        {/* Hero Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -51,13 +56,14 @@ export default function AboutUsPage() {
             Who We Are
           </span>
           <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight mt-8">
-            About <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 ">ElectroMart</span>
+            About <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">ElectroMart</span>
           </h1>
           <p className="text-base md:text-lg mt-6 text-slate-400 leading-relaxed">
-            ElectroMart is Bangladesh's premier tech and electronics marketplace, dedicated to bringing you global innovations right to your doorstep. Founded in 2023, we bridge the gap between world-class technology and smart consumers in Dhaka and beyond.
+            ElectroMart is Bangladesh&apos;s premier tech and electronics marketplace, dedicated to bringing you global innovations right to your doorstep. Founded in 2023, we bridge the gap between world-class technology and smart consumers in Dhaka and beyond.
           </p>
         </motion.div>
 
+        {/* Mission & Vision */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
@@ -88,7 +94,7 @@ export default function AboutUsPage() {
           </motion.div>
         </div>
 
-        {/* (Core Values) */}
+        {/* Core Values */}
         <div className="space-y-8">
           <div className="text-center">
             <h2 className="text-3xl font-extrabold text-white tracking-tight">Why Choose Us</h2>
@@ -118,7 +124,7 @@ export default function AboutUsPage() {
           </div>
         </div>
 
-        {/*(Recharts) */}
+        {/* Growth Chart */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -129,7 +135,7 @@ export default function AboutUsPage() {
             <div className="lg:col-span-4 space-y-4">
               <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Our Growth Story</h2>
               <p className="text-sm text-slate-400 leading-relaxed">
-                Numbers don't lie. Thanks to our transparent policies and customer loyalty, ElectroMart has achieved massive milestones in expanding its family across Bangladesh.
+                Numbers don&apos;t lie. Thanks to our transparent policies and customer loyalty, ElectroMart has achieved massive milestones in expanding its family across Bangladesh.
               </p>
               <div className="pt-2">
                 <span className="text-3xl font-black text-cyan-400">75,000+</span>
@@ -140,26 +146,51 @@ export default function AboutUsPage() {
             <div className="lg:col-span-8 h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={growthData}>
-                  <XAxis dataKey="year" stroke="#64748b" fontSize={12} tickLine={false} />
-                  <YAxis stroke="#64748b" fontSize={12} tickLine={false} />
+                  <XAxis 
+                    dataKey="year" 
+                    stroke="#64748b" 
+                    fontSize={12} 
+                    tickLine={false} 
+                  />
+                  <YAxis 
+                    stroke="#64748b" 
+                    fontSize={12} 
+                    tickLine={false} 
+                  />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '12px' }}
+                    contentStyle={{ 
+                      backgroundColor: '#0f172a', 
+                      borderColor: '#1e293b', 
+                      borderRadius: '12px' 
+                    }}
                     labelStyle={{ color: '#fff' }}
                   />
-                  <Bar dataKey="customers" fill="#06b6d4" radius={[8, 8, 0, 0]} />
+                  <Bar 
+                    dataKey="customers" 
+                    fill="#06b6d4" 
+                    radius={[8, 8, 0, 0]} 
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
         </motion.div>
 
+        {/* Contact Info */}
         <div className="border-t border-slate-800/60 pt-10 text-center max-w-2xl mx-auto space-y-4">
           <h3 className="text-xl font-bold text-white">Have Any Questions?</h3>
           <p className="text-sm text-slate-400">Feel free to connect with our official corporate branch for partnerships, bulk corporate queries, or service inquiries.</p>
+          
           <div className="flex flex-wrap justify-center gap-6 text-sm text-slate-300 pt-2">
-            <span className="flex items-center gap-2 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800"><MapPin size={16} className="text-cyan-400" /> Dhaka, Bangladesh</span>
-            <span className="flex items-center gap-2 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800"><Phone size={16} className="text-cyan-400" /> +880 1234 567890</span>
-            <span className="flex items-center gap-2 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800"><Mail size={16} className="text-cyan-400" /> support@electromart.com</span>
+            <span className="flex items-center gap-2 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800">
+              <MapPin size={16} className="text-cyan-400" /> Dhaka, Bangladesh
+            </span>
+            <span className="flex items-center gap-2 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800">
+              <Phone size={16} className="text-cyan-400" /> +880 1234 567890
+            </span>
+            <span className="flex items-center gap-2 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800">
+              <Mail size={16} className="text-cyan-400" /> support@electromart.com
+            </span>
           </div>
         </div>
 

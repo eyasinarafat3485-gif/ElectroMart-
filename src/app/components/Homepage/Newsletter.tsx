@@ -1,14 +1,15 @@
-// components/home/Newsletter.tsx
+
 'use client';
+
 import { useState } from 'react';
 
 export default function Newsletter() {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
+  const [email, setEmail] = useState<string>('');
+  const [subscribed, setSubscribed] = useState<boolean>(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (email) {
+    if (email.trim()) {
       setSubscribed(true);
       setTimeout(() => {
         setEmail('');
@@ -18,10 +19,10 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="bg-slate-950 py-15  border-slate-900">
+    <section className="bg-slate-950 py-15 border-slate-900">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="mx-auto ">
-         <span className="text-indigo-400 text-xs font-semibold tracking-wider uppercase">Stay Updated</span>
+        <div className="mx-auto">
+          <span className="text-indigo-400 text-xs font-semibold tracking-wider uppercase">Stay Updated</span>
           
           <h2 className="text-3xl md:text-4xl font-extrabold text-white my-3">
             Get Exclusive Deals &amp; Updates
@@ -51,7 +52,7 @@ export default function Newsletter() {
             </form>
           ) : (
             <div className="bg-emerald-900/30 border border-emerald-500 text-emerald-400 py-6 px-8 rounded-3xl text-lg font-medium">
-              🎉 Thank you! You're now subscribed.
+              🎉 Thank you! You are now subscribed.
             </div>
           )}
 

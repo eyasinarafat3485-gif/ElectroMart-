@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  const commonProtectedRoutes = ["/my-collection", "/all-items"];
+  const commonProtectedRoutes = ["/my-collection"];
   const adminOnlyRoutes = ["/add-item", "/order-manage"];
 
   const isCommonProtected = commonProtectedRoutes.some((route) => pathname.startsWith(route));
@@ -41,7 +41,6 @@ console.log("USER:", session?.user);
 export const config = {
   matcher: [
     "/my-collection/:path*",
-    "/all-items/:path",
     "/add-item/:path*",
     "/order-manage/:path*",
   ],

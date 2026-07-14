@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { authClient } from "@/lib/auth-client";
-import { Loader2, ShoppingBag, Calendar, ArrowRight, ShoppingCart } from 'lucide-react';
+import { Loader2, Calendar, ArrowRight, ShoppingCart } from 'lucide-react';
 import { TbCoinTaka } from "react-icons/tb";
 
 interface OrderItem {
@@ -16,13 +16,14 @@ interface OrderItem {
   productId: string;
   productTitle: string;
   price: number;
-  imageUrl: string;
+  imageUrl: string;          
   orderedAt: string;
   status?: string;
 }
 
 export default function MyCollectionPage() {
   const { data: session, isPending: authLoading } = authClient.useSession();
+  
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,47 +68,23 @@ export default function MyCollectionPage() {
     fetchMyOrders();
   }, [session, authLoading]);
 
-  // Safe Status Badge with default "Pending"
   const getStatusBadge = (status?: string) => {
     const normalizedStatus = (status || 'pending').toLowerCase();
 
     if (normalizedStatus === 'pending') {
-      return (
-        <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-md font-medium text-sm">
-          Pending
-        </span>
-      );
+      return <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-md font-medium text-sm">Pending</span>;
     }
-
     if (normalizedStatus === 'confirmed' || normalizedStatus === 'done') {
-      return (
-        <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-md font-medium text-sm">
-          Confirmed
-        </span>
-      );
+      return <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-md font-medium text-sm">Confirmed</span>;
     }
-
     if (normalizedStatus === 'delivered') {
-      return (
-        <span className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 px-3 py-1 rounded-md font-medium text-sm">
-          Delivered
-        </span>
-      );
+      return <span className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 px-3 py-1 rounded-md font-medium text-sm">Delivered</span>;
     }
-
     if (normalizedStatus === 'rejected') {
-      return (
-        <span className="bg-rose-500/10 text-rose-400 border border-rose-500/30 px-3 py-1 rounded-md font-medium text-sm">
-          Rejected
-        </span>
-      );
+      return <span className="bg-rose-500/10 text-rose-400 border border-rose-500/30 px-3 py-1 rounded-md font-medium text-sm">Rejected</span>;
     }
 
-    return (
-      <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-md font-medium text-sm">
-        Pending
-      </span>
-    );
+    return <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-md font-medium text-sm">Pending</span>;
   };
 
   if (authLoading || loading) {
@@ -136,17 +113,13 @@ export default function MyCollectionPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 py-15 px-4 md:px-10 pt-30 pb-15 sm:px-6 lg:px-8">
-      <div className=" mx-auto">
+      <div className="mx-auto">
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6 mb-10">
           <div>
             <h1 className="mt-6 text-4xl md:text-5xl font-extrabold text-white leading-tight">
-                        My
-                        <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                            {" "}
-                            Collection
-                        </span>
-                    </h1>
+              My <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Collection</span>
+            </h1>
             <p className="text-sm text-slate-400 mt-1">
               Welcome back, <span className="text-blue-500 text-lg font-medium">{session.user.name}</span>. Review all your ordered items below.
             </p>
@@ -187,7 +160,7 @@ export default function MyCollectionPage() {
                 <div className="space-y-3">
                   <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-slate-950 border border-slate-800/80">
                     <img
-                      src={order.imageUrl}
+                      src={order.imageUrl}      
                       alt={order.productTitle}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-103"
                     />
@@ -227,4 +200,3 @@ export default function MyCollectionPage() {
     </div>
   );
 }
-

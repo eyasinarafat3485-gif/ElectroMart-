@@ -6,7 +6,6 @@ import Newsletter from "./components/Homepage/Newsletter";
 import ProductSection from "./components/Homepage/ProductSection";
 import Stats from "./components/Homepage/Stats";
 
-
 export default function Home() {
   return (
     <div>

@@ -11,6 +11,7 @@ import BuyNowButton from './BuyNowButton';
 
 import { authClient } from "@/lib/auth-client";
 
+// শুধুমাত্র এই ইন্টারফেসে name? এবং description? অপশনাল হিসেবে যোগ করা হয়েছে এরর দূর করার জন্য
 interface ItemDetail {
   _id: string;
   title: string;
@@ -23,6 +24,8 @@ interface ItemDetail {
   stock: number;
   location: string;
   image: string;
+  name?: string;         // TypeScript error solve করার জন্য যোগ করা হয়েছে
+  description?: string;  // TypeScript error solve করার জন্য যোগ করা হয়েছে
 }
 
 interface UserInfo {
@@ -52,8 +55,6 @@ export default function ItemDetailsPage() {
   const [error, setError] = useState<string | null>(null);
 
   const { data: session } = authClient.useSession();
-
-
 
   const loggedUser: UserInfo | null = session?.user ? {
     _id: session.user.id || "",
@@ -265,9 +266,16 @@ export default function ItemDetailsPage() {
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {relatedItems.map((relatedItem) => (
-                <ItemCard key={relatedItem._id} item={relatedItem} />
-              ))}
+            {relatedItems.map((relatedItem) => (
+  <ItemCard
+    key={relatedItem._id}
+    item={{
+      ...relatedItem,
+      name: relatedItem.name ?? relatedItem.title,
+      description: relatedItem.description ?? relatedItem.fullDescription,
+    }}
+  />
+))}
             </div>
           </div>
         )}

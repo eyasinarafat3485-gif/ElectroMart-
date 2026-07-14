@@ -46,11 +46,16 @@ export default async function ProductSection() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((product) => (
-            <ItemCard
-              key={product._id}
-              item={product}
-            />
-          ))}
+  <ItemCard
+    key={product._id}
+    item={{
+      ...product,
+      title: product.name,
+      brand: "N/A",
+      description: "",
+    }}
+  />
+))}
         </div>
       </div>
     </section>

@@ -77,11 +77,11 @@ export default function RegisterPage() {
         }
 
         // 🚨 Image Validation
-        if (!profileImage) {
-            setError("Profile photo is required.");
-            toast.error("Profile photo is required.");
-            return;
-        }
+        // if (!profileImage) {
+        //     setError("Profile photo is required.");
+        //     toast.error("Profile photo is required.");
+        //     return;
+        // }
 
         if (!validatePassword(formData.password)) {
             setError(
@@ -99,40 +99,14 @@ export default function RegisterPage() {
             setLoading(true);
 
             // 🚀 1. ImgBB Image Upload Logic
-            const IMGBBB_API_KEY = process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API;
-            if (!IMGBBB_API_KEY) {
-                setError("Image upload API key is missing in environment variables.");
-                toast.error("Image upload API key is missing.");
-                setLoading(false);
-                return;
-            }
-
-            const imgbbFormData = new FormData();
-            imgbbFormData.append("image", profileImage);
-
-            const imgbbResponse = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBBB_API_KEY}`, {
-                method: "POST",
-                body: imgbbFormData,
-            });
-
-            const imgbbData = await imgbbResponse.json();
-
-            if (!imgbbResponse.ok || !imgbbData.success) {
-                const errMsg = imgbbData.error?.message || "Failed to upload profile image.";
-                setError(`ImgBB Error: ${errMsg}`);
-                toast.error(`ImgBB Error: ${errMsg}`);
-                setLoading(false);
-                return;
-            }
-
-            const imageUrl = imgbbData.data.url;
+           
 
             // 🔐 2. Auth SignUp with Image URL
             const { error: signUpError } = await authClient.signUp.email({
                 email: formData.email,
                 password: formData.password,
                 name: formData.name,
-                image: imageUrl, 
+                // image: imageUrl, 
             });
 
             if (signUpError) {
@@ -140,9 +114,8 @@ export default function RegisterPage() {
                 toast.error(signUpError.message ?? "Failed to create account. Please try again.");
                 return;
             }
-
             const { data: tokenData } = await authClient.token();
-            await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/role`, {
+            await fetch(`${process.env.BETTER_AUTH_URL}/api/users/role`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -158,12 +131,15 @@ export default function RegisterPage() {
             router.push("/login");
 
         } catch (err) {
-            console.error(err);
-            setError("Something went wrong.");
-            toast.error("Something went wrong.");
-        } finally {
-            setLoading(false);
-        }
+    console.error("Signup Error:", err);
+
+    if (err instanceof Error) {
+        toast.error(err.message);
+        setError(err.message);
+    } else {
+        toast.error("Unknown error");
+    }
+}
     };
 
     return (
@@ -179,7 +155,7 @@ export default function RegisterPage() {
                 <form onSubmit={handleSubmit} className="space-y-6">
 
                     {/* 📸 Profile Image Upload UI */}
-                    <div
+                    {/* <div
                         onClick={() => fileInputRef.current?.click()}
                         className={`flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-slate-800/40 border transition-all cursor-pointer group ${imagePreview ? "border-blue-500/50 bg-slate-800/60" : "border-slate-700 hover:border-slate-600"
                             }`}
@@ -212,7 +188,7 @@ export default function RegisterPage() {
                                 {imagePreview ? "Image loaded successfully." : "Click to browse image. Max 2MB (Required)."}
                             </p>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Name */}
                     <div>

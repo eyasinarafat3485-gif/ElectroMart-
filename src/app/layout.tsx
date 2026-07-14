@@ -1,3 +1,6 @@
+import dns from "node:dns/promises";
+ dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 import type { Metadata } from "next";
 import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";

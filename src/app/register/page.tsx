@@ -132,7 +132,7 @@ export default function RegisterPage() {
                 email: formData.email,
                 password: formData.password,
                 name: formData.name,
-                image: imageUrl, // ✅ Image URL Passed Here
+                image: imageUrl, 
             });
 
             if (signUpError) {

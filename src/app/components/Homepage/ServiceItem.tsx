@@ -17,16 +17,7 @@ interface Service {
 }
 
 const services: Service[] = [
-    {
-        icon: Truck,
-        title: "Fast Delivery",
-        description: "Same-day delivery inside Dhaka and 2-3 days nationwide across Bangladesh.",
-    },
-    {
-        icon: ShieldCheck,
-        title: "100% Genuine Products",
-        description: "Every item is sourced from authorized distributors with full manufacturer warranty.",
-    },
+
     {
         icon: Wrench,
         title: "Free Installation",
@@ -41,12 +32,8 @@ const services: Service[] = [
         icon: CreditCard,
         title: "EMI Available",
         description: "Split your payment into easy monthly installments with partner banks.",
-    },
-    {
-        icon: Headset,
-        title: "24/7 Support",
-        description: "Our support team is always on call to help with orders and troubleshooting.",
-    },
+    }
+  
 ];
 
 export default function ServiceItem() {
@@ -54,9 +41,6 @@ export default function ServiceItem() {
         <section className="bg-slate-950 py-16 border-slate-900">
             <div className="max-w-7xl mx-auto px-4 md:px-10 lg:px-8">
                 <div className="text-center mb-12">
-                    <span className="text-indigo-400 text-xs font-semibold tracking-wider uppercase">
-                        WHY CHOOSE US
-                    </span>
                     <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-2">
                         Our Services
                     </h2>

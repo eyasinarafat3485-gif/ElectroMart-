@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useRef } from "react";
-import { Eye, EyeOff, UploadCloud, Trash2 } from "lucide-react";
+import { Eye, EyeOff} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { authClient } from "@/lib/auth-client";
@@ -14,11 +14,12 @@ export default function RegisterPage() {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
+        image: "", 
         password: "",
         confirmPassword: "",
     });
 
-    // 📸 Image States
+
     const [profileImage, setProfileImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -69,19 +70,13 @@ export default function RegisterPage() {
         if (
             !formData.name ||
             !formData.email ||
+            !formData.image || 
             !formData.password ||
             !formData.confirmPassword
         ) {
             setError("Please fill in all fields.");
             return;
         }
-
-        // 🚨 Image Validation
-        // if (!profileImage) {
-        //     setError("Profile photo is required.");
-        //     toast.error("Profile photo is required.");
-        //     return;
-        // }
 
         if (!validatePassword(formData.password)) {
             setError(
@@ -98,15 +93,11 @@ export default function RegisterPage() {
         try {
             setLoading(true);
 
-            // 🚀 1. ImgBB Image Upload Logic
-           
-
-            // 🔐 2. Auth SignUp with Image URL
             const { error: signUpError } = await authClient.signUp.email({
                 email: formData.email,
                 password: formData.password,
                 name: formData.name,
-                // image: imageUrl, 
+                image: formData.image, 
             });
 
             if (signUpError) {
@@ -132,15 +123,17 @@ export default function RegisterPage() {
             router.push("/login");
 
         } catch (err) {
-    console.error("Signup Error:", err);
+            console.error("Signup Error:", err);
 
-    if (err instanceof Error) {
-        toast.error(err.message);
-        setError(err.message);
-    } else {
-        toast.error("Unknown error");
-    }
-}
+            if (err instanceof Error) {
+                toast.error(err.message);
+                setError(err.message);
+            } else {
+                toast.error("Unknown error");
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -155,42 +148,6 @@ export default function RegisterPage() {
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-6">
 
-                    {/* 📸 Profile Image Upload UI */}
-                    {/* <div
-                        onClick={() => fileInputRef.current?.click()}
-                        className={`flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-slate-800/40 border transition-all cursor-pointer group ${imagePreview ? "border-blue-500/50 bg-slate-800/60" : "border-slate-700 hover:border-slate-600"
-                            }`}
-                    >
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleImageChange}
-                            accept="image/*"
-                            className="hidden"
-                        />
-
-                        <div className="w-16 h-16 rounded-full bg-slate-800 border-2 border-dashed border-slate-600 flex items-center justify-center text-slate-500 overflow-hidden relative shrink-0 group-hover:border-blue-500/50 transition-colors">
-                            {imagePreview ? (
-                                <>
-                                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                        <Trash2 size={16} className="text-red-500" onClick={removeImage} />
-                                    </div>
-                                </>
-                            ) : (
-                                <UploadCloud size={22} className="group-hover:text-blue-400 transition-colors" />
-                            )}
-                        </div>
-                        <div className="text-center sm:text-left flex-1">
-                            <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center justify-center sm:justify-start gap-1.5">
-                                Profile Avatar <span className="text-red-500 text-sm">*</span>
-                            </h4>
-                            <p className="text-[10px] text-slate-500 mt-0.5">
-                                {imagePreview ? "Image loaded successfully." : "Click to browse image. Max 2MB (Required)."}
-                            </p>
-                        </div>
-                    </div> */}
-
                     {/* Name */}
                     <div>
                         <label className="block mb-2 text-sm font-medium text-slate-400">Full Name</label>
@@ -200,6 +157,19 @@ export default function RegisterPage() {
                             value={formData.name}
                             onChange={handleChange}
                             placeholder="John Doe"
+                            className="w-full rounded-2xl border border-slate-700 bg-slate-800 px-5 py-4 text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        />
+                    </div>
+
+                    {/* 📸 Image URL Input (১ম কোডের মতো করে আপনার থিমে মানানসই ডিজাইন) */}
+                    <div>
+                        <label className="block mb-2 text-sm font-medium text-slate-400">Image URL</label>
+                        <input
+                            type="text"
+                            name="image"
+                            value={formData.image}
+                            onChange={handleChange}
+                            placeholder="https://example.com/avatar.jpg"
                             className="w-full rounded-2xl border border-slate-700 bg-slate-800 px-5 py-4 text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         />
                     </div>
@@ -296,6 +266,3 @@ export default function RegisterPage() {
         </div>
     );
 }
-
-
-

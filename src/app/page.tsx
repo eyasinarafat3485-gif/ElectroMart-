@@ -4,6 +4,7 @@ import Features from "./components/Homepage/Features";
 import Hero from "./components/Homepage/Hero";
 import Newsletter from "./components/Homepage/Newsletter";
 import ProductSection from "./components/Homepage/ProductSection";
+import ServiceItem from "./components/Homepage/ServiceItem";
 import Stats from "./components/Homepage/Stats";
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
       <ProductSection />
       <Stats />
       <Features />
+      <ServiceItem />
       <CustomerStories />
       <FAQ />
       <Newsletter />

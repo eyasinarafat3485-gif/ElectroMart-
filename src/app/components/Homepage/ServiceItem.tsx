@@ -38,12 +38,10 @@ const services: Service[] = [
 
 export default function ServiceItem() {
     return (
-        <section className="bg-slate-950 py-16 border-slate-900">
+        <section className="bg-slate-950 py-15 border-slate-900">
             <div className="max-w-7xl mx-auto px-4 md:px-10 lg:px-8">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-2">
-                        Our Services
-                    </h2>
+                     <span className="text-indigo-400 text-xs font-semibold tracking-wider uppercase">Our Services</span>
                     <p className="text-slate-400 text-sm mt-3 max-w-xl mx-auto">
                         Everything you need for a smooth, worry-free shopping experience.
                     </p>

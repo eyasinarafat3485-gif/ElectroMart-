@@ -11,7 +11,6 @@ import BuyNowButton from './BuyNowButton';
 
 import { authClient } from "@/lib/auth-client";
 
-// শুধুমাত্র এই ইন্টারফেসে name? এবং description? অপশনাল হিসেবে যোগ করা হয়েছে এরর দূর করার জন্য
 interface ItemDetail {
   _id: string;
   title: string;
@@ -24,8 +23,8 @@ interface ItemDetail {
   stock: number;
   location: string;
   image: string;
-  name?: string;         // TypeScript error solve করার জন্য যোগ করা হয়েছে
-  description?: string;  // TypeScript error solve করার জন্য যোগ করা হয়েছে
+  name?: string;         
+  description?: string;  
 }
 
 interface UserInfo {
@@ -47,8 +46,7 @@ const categoryColors: Record<CategoryType, string> = {
 
 export default function ItemDetailsPage() {
   const params = useParams();
-  const id = params?.id as string;
-
+  
   const [item, setItem] = useState<ItemDetail | null>(null);
   const [relatedItems, setRelatedItems] = useState<ItemDetail[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -64,51 +62,64 @@ export default function ItemDetailsPage() {
   } : null;
 
   useEffect(() => {
-    if (!id) return;
-
     const fetchItemDetails = async () => {
-      const { data: tokenData } = await authClient.token();
-      console.log(tokenData);
+      // Next.js 15+ এর safe params resolution
+      const resolvedParams = await params;
+      const id = resolvedParams?.id as string;
+
+      if (!id) {
+        setError("Product ID not found in URL");
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
+        setError(null);
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/items/${id}`, {
+        // আপনার ব্যাকএন্ডের সঠিক API Route ব্যবহার করা হয়েছে (/api/items/${id})
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/items/${id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "authorization": `Bearer ${tokenData?.token}`,
           },
         });
 
         if (!res.ok) {
-          throw new Error("Failed to fetch product details");
+          throw new Error(`Server responded with status: ${res.status}`);
         }
 
         const data = await res.json();
+        
+        if (!data || Object.keys(data).length === 0) {
+          throw new Error("No product details returned from server");
+        }
+
         setItem(data);
       } catch (err: any) {
+        console.error("Fetch Error:", err);
         setError(err.message || "Something went wrong!");
       } finally {
         setLoading(false);
       }
     };
-    fetchItemDetails();
-  }, [id]);
+
+    if (params) {
+      fetchItemDetails();
+    }
+  }, [params]);
 
   useEffect(() => {
     if (!item || !item.category) return;
 
     const fetchRelatedItems = async () => {
       try {
-        const { data: tokenData } = await authClient.token();
-
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/api/items?category=${item.category}`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "authorization": `Bearer ${tokenData?.token}`,
             },
           }
         );
@@ -125,7 +136,7 @@ export default function ItemDetailsPage() {
     };
 
     fetchRelatedItems();
-  }, [item, id]);
+  }, [item]);
 
   if (loading) {
     return (
@@ -266,16 +277,16 @@ export default function ItemDetailsPage() {
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {relatedItems.map((relatedItem) => (
-  <ItemCard
-    key={relatedItem._id}
-    item={{
-      ...relatedItem,
-      name: relatedItem.name ?? relatedItem.title,
-      description: relatedItem.description ?? relatedItem.fullDescription,
-    }}
-  />
-))}
+              {relatedItems.map((relatedItem) => (
+                <ItemCard
+                  key={relatedItem._id}
+                  item={{
+                    ...relatedItem,
+                    name: relatedItem.name ?? relatedItem.title,
+                    description: relatedItem.description ?? relatedItem.fullDescription,
+                  }}
+                />
+              ))}
             </div>
           </div>
         )}

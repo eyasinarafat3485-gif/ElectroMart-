@@ -114,8 +114,9 @@ export default function RegisterPage() {
                 toast.error(signUpError.message ?? "Failed to create account. Please try again.");
                 return;
             }
+
             const { data: tokenData } = await authClient.token();
-            await fetch(`${process.env.BETTER_AUTH_URL}/api/users/role`, {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/role`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

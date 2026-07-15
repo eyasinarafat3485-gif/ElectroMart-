@@ -1,5 +1,6 @@
 'use client'
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { FaFacebook } from 'react-icons/fa6';
 import { 
   FiMail, 
@@ -96,7 +97,12 @@ export default function SupportPage(): React.JSX.Element {
       <div className="mx-auto  py-16 relative z-10">
         
         {/* Header / Hero Section */}
-        <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center max-w-3xl mx-auto mb-20 space-y-4"
+        >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-bold text-cyan-400  tracking-wide uppercase">
             <span className="w-2 h-2 rounded-full text-xs font-bold bg-cyan-400 animate-pulse uppercase " />
             All Systems Operational
@@ -107,7 +113,7 @@ export default function SupportPage(): React.JSX.Element {
           <p className="text-lg text-slate-400 font-normal leading-relaxed">
             Get personalized assistance from our engineering and product specialist teams. Choose a channel or leave a direct request below.
           </p>
-        </div>
+        </motion.div>
 
         {/* 3-Column Interactive Contact Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">

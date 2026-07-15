@@ -241,46 +241,52 @@ export default function MyCollectionPage() {
       return;
     }
 
-    const fetchMyOrders = async () => {
-      try {
-        setLoading(true);
-        setError(null); // এরর স্টেট রিসেট
+   const fetchMyOrders = async () => {
+  try {
+    setLoading(true);
+    setError(null);
 
-        // 🔑 Better-Auth থেকে সেশন টোকেনটি রিলিজ করা হচ্ছে
-        const tokenRes = await authClient.token();
-        const token = tokenRes?.data?.token;
+    // 🔑 Better-Auth থেকে টোকেন নেওয়া হচ্ছে
+    const tokenRes = await authClient.token();
+    const token = tokenRes?.data?.token;
 
-        if (!token) {
-          throw new Error("Authentication token not found. Please re-login.");
-        }
+    // যদি ফ্রন্টএন্ডে কোনো কারণে টোকেন না পায়, তবে রিকোয়েস্ট পাঠানোর আগেই এরর ধরবে
+    if (!token) {
+      console.log("❌ Frontend could not retrieve token from Better-Auth");
+      throw new Error("Authentication token not found. Please log in again.");
+    }
 
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/orders?email=${session.user.email}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "authorization": `Bearer ${token}`, // 👈 টোকেন পাঠানো হচ্ছে
-            },
-            cache: "no-store", // 👈 লাইভ সাইটে যেন ওল্ড ডাটা ক্যাশ না ধরে
-          }
-        );
+    console.log("🚀 Sending token to backend:", token); // ডিবাগিং এর জন্য
 
-        if (!res.ok) {
-          if (res.status === 401 || res.status === 403) {
-            throw new Error("Session expired or invalid token. Please log in again.");
-          }
-          throw new Error("Failed to fetch your collection");
-        }
-
-        const data: OrderItem[] = await res.json();
-        setOrders(data);
-      } catch (err: any) {
-        setError(err.message || "Something went wrong while fetching data");
-      } finally {
-        setLoading(false);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/orders?email=${session.user.email}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          // 💡 'authorization' এর বদলে 'Authorization' (ক্যাপিটাল A) ব্যবহার করুন, 
+          // অনেক লাইভ প্রক্সি বা CDN (যেমন Vercel) স্মল লেটার হেডার স্ট্রিপ/মুছে দিতে পারে।
+          "Authorization": `Bearer ${token}`, 
+        },
+        cache: "no-store",
       }
-    };
+    );
+
+    if (!res.ok) {
+      if (res.status === 401 || res.status === 403) {
+        throw new Error("Session expired or invalid token. Please log in again.");
+      }
+      throw new Error("Failed to fetch your collection");
+    }
+
+    const data: OrderItem[] = await res.json();
+    setOrders(data);
+  } catch (err: any) {
+    setError(err.message || "Something went wrong while fetching data");
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchMyOrders();
   }, [session, authLoading]);

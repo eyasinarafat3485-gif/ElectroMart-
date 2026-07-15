@@ -77,7 +77,6 @@ export default function ItemDetailsPage() {
         setLoading(true);
         setError(null);
 
-        // আপনার ব্যাকএন্ডের সঠিক API Route ব্যবহার করা হয়েছে (/api/items/${id})
         const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/items/${id}`, {
           method: "GET",
           headers: {

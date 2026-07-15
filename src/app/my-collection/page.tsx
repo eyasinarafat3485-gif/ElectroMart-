@@ -39,7 +39,7 @@ export default function MyCollectionPage() {
       try {
         setLoading(true);
 
-        const { data: tokenData } = await authClient.token();
+        // const { data: tokenData } = await authClient.token();
 
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/api/orders?email=${session.user.email}`,
@@ -47,7 +47,7 @@ export default function MyCollectionPage() {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "authorization": `Bearer ${tokenData?.token}`,
+              // "authorization": `Bearer ${tokenData?.token}`,
             },
           }
         );

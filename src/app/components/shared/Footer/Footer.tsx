@@ -56,9 +56,9 @@ export default function Footer() {
             <h3 className="text-white font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li><Link href="/about" className="hover:text-indigo-400 transition-colors">About Us</Link></li>
-              <li><Link href="/explore" className="hover:text-indigo-400 transition-colors">Explore Products</Link></li>
-              <li><Link href="/privacy" className="hover:text-indigo-400 transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-indigo-400 transition-colors">Terms of Service</Link></li>
+              <li><Link href="/all-items" className="hover:text-indigo-400 transition-colors">All Products</Link></li>
+              {/* <li><Link href="/about" className="hover:text-indigo-400 transition-colors">Privacy Policy</Link></li> */}
+              {/* <li><Link href="/terms" className="hover:text-indigo-400 transition-colors">Terms of Service</Link></li> */}
             </ul>
           </div>
 

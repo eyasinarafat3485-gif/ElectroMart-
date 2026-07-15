@@ -35,6 +35,24 @@ export default function LoginPage() {
         setError("");
     };
 
+    // ডেমো ক্রেডেনশিয়াল অটো-ফিল করার হ্যান্ডলার
+    const handleDemoLogin = (role: 'admin' | 'user') => {
+        setError("");
+        if (role === 'admin') {
+            setFormData({
+                email: "admin@electormart.com",
+                password: "admin123",
+            });
+            toast.info("Admin credentials auto-filled!");
+        } else {
+            setFormData({
+                email: "user@electormart.com",
+                password: "user123",
+            });
+            toast.info("User credentials auto-filled!");
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -161,6 +179,31 @@ export default function LoginPage() {
                             "Login"
                         )}
                     </button>
+
+                    {/* Divider Line */}
+                    <div className="relative flex py-2 items-center">
+                        <div className="flex-grow border-t border-slate-800"></div>
+                        <span className="flex-shrink mx-4 text-slate-500 text-xs uppercase tracking-wider">Demo Login</span>
+                        <div className="flex-grow border-t border-slate-800"></div>
+                    </div>
+
+                    {/* Demo Buttons Grid */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <button
+                            type="button"
+                            onClick={() => handleDemoLogin('admin')}
+                            className="rounded-2xl border border-slate-700 bg-slate-800/50 py-3 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white cursor-pointer text-center"
+                        >
+                            Demo Admin
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => handleDemoLogin('user')}
+                            className="rounded-2xl border border-slate-700 bg-slate-800/50 py-3 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white cursor-pointer text-center"
+                        >
+                            Demo User
+                        </button>
+                    </div>
 
                 </form>
 

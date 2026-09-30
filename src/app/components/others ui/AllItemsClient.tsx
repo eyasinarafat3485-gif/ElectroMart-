@@ -24,8 +24,22 @@ const AllItemsClient = ({ initialItems = [] }: AllItemsClientProps) => {
   const [maxPrice, setMaxPrice] = useState<number>(500000);
   const [sortBy, setSortBy] = useState<string>("default");
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(8);
 
-  const itemsPerPage = 8;
+  // Responsive items per page: 4 on mobile (< 640px), 8 on desktop
+  useEffect(() => {
+    const updateItemsPerPage = () => {
+      if (window.innerWidth < 640) {
+        setItemsPerPage(4);
+      } else {
+        setItemsPerPage(8);
+      }
+    };
+
+    updateItemsPerPage();
+    window.addEventListener("resize", updateItemsPerPage);
+    return () => window.removeEventListener("resize", updateItemsPerPage);
+  }, []);
 
   // Calculate max available price dynamically
   const maxAvailablePrice = useMemo(() => {

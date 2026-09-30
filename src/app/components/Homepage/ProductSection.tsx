@@ -21,7 +21,7 @@ export default async function ProductSection() {
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/items?limit=8`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/items?limit=4`,
       {
         cache: "no-store",
       }
@@ -29,7 +29,7 @@ export default async function ProductSection() {
 
     if (res.ok) {
       const data = await res.json();
-      products = Array.isArray(data) ? data.slice(0, 8) : [];
+      products = Array.isArray(data) ? data.slice(0, 4) : [];
     }
   } catch (err) {
     console.error("Failed to load trending products:", err);

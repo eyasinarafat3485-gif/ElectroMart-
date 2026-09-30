@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Lenis from "lenis";
+import "lenis/dist/lenis.css";
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
+  const lenisRef = useRef<Lenis | null>(null);
+
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -11,9 +14,12 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      touchMultiplier: 1.5,
+      wheelMultiplier: 1.05,
+      touchMultiplier: 1.6,
       infinite: false,
     });
+
+    lenisRef.current = lenis;
 
     let rafId: number;
     function raf(time: number) {

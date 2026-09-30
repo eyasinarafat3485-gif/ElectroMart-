@@ -131,16 +131,16 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full">
       {/* Infinite Scrolling Marquee Top Bar (Right to Left with Pause on Hover) */}
-      <div className="marquee-container relative w-full bg-gradient-to-r from-rose-600 via-pink-600 to-rose-600 border-b border-rose-500/30 text-white py-2 overflow-hidden select-none cursor-pointer shadow-md">
-        <div className="animate-marquee flex items-center gap-10 whitespace-nowrap text-xs font-bold tracking-wide">
+      <div className="marquee-container relative w-full bg-gradient-to-r from-slate-950 via-indigo-950/90 to-slate-950 border-b border-indigo-500/20 text-slate-200 py-2 overflow-hidden select-none cursor-pointer shadow-lg backdrop-blur-md">
+        <div className="animate-marquee flex items-center gap-10 whitespace-nowrap text-xs font-semibold tracking-wide">
           {/* Loop items twice for seamless infinite loop */}
           {[...marqueeItems, ...marqueeItems].map((item, idx) => {
             const Icon = item.icon;
             return (
-              <div key={idx} className="flex items-center gap-2 text-white/95 hover:text-white transition-colors shrink-0">
-                <Icon className="w-3.5 h-3.5 text-white shrink-0" />
+              <div key={idx} className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors shrink-0">
+                <Icon className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                 <span>{item.text}</span>
-                <span className="text-white/40 ml-4 font-normal">•</span>
+                <span className="text-indigo-500/40 ml-4 font-normal">•</span>
               </div>
             );
           })}

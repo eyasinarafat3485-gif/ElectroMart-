@@ -282,21 +282,21 @@ export default function Navbar() {
                     </Link>
                   )}
 
-                  {/* Dynamic Action Button: Logout if Logged In, Login if Logged Out */}
+                  {/* Action Button: Logout if Logged In, Login if Logged Out (Hidden on mobile, visible on sm+) */}
                   {!isLoading && (
                     isLoggedIn ? (
                       <button
                         onClick={handleLogout}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 hover:text-rose-300 text-xs font-bold transition-all shadow-sm cursor-pointer active:scale-95"
+                        className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 hover:text-rose-300 text-xs font-bold transition-all shadow-sm cursor-pointer active:scale-95"
                         title="Logout from Account"
                       >
                         <LogOut className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline">Logout</span>
+                        <span>Logout</span>
                       </button>
                     ) : (
                       <Link
                         href="/login"
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold transition-all shadow-md shadow-indigo-600/25 active:scale-95 cursor-pointer"
+                        className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold transition-all shadow-md shadow-indigo-600/25 active:scale-95 cursor-pointer"
                       >
                         <LogIn className="w-3.5 h-3.5" />
                         <span>Login</span>

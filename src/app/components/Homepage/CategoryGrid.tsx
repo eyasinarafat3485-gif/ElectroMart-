@@ -78,6 +78,7 @@ export default function CategoryGrid() {
   const [canScrollLeft, setCanScrollLeft] = React.useState(false);
   const [canScrollRight, setCanScrollRight] = React.useState(true);
   const [activeIndex, setActiveIndex] = React.useState(0);
+  const [isPaused, setIsPaused] = React.useState(false);
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -85,15 +86,37 @@ export default function CategoryGrid() {
       setCanScrollLeft(scrollLeft > 10);
       setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
       
-      const itemWidth = 140; // Approximate card width + gap
+      const itemWidth = 145; // Approximate card width + gap
       const index = Math.round(scrollLeft / itemWidth);
       setActiveIndex(Math.min(categories.length - 1, Math.max(0, index)));
     }
   };
 
+  // Auto-Carousel Timer for Mobile
+  React.useEffect(() => {
+    if (isPaused) return;
+
+    const timer = setInterval(() => {
+      if (scrollContainerRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+        const maxScroll = scrollWidth - clientWidth;
+        const cardStep = 145;
+
+        if (scrollLeft >= maxScroll - 15) {
+          // Loop back to start smoothly
+          scrollContainerRef.current.scrollTo({ left: 0, behavior: "smooth" });
+        } else {
+          scrollContainerRef.current.scrollBy({ left: cardStep, behavior: "smooth" });
+        }
+      }
+    }, 2400);
+
+    return () => clearInterval(timer);
+  }, [isPaused]);
+
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
-      const scrollAmount = 180;
+      const scrollAmount = 150;
       scrollContainerRef.current.scrollBy({
         left: direction === "left" ? -scrollAmount : scrollAmount,
         behavior: "smooth",
@@ -101,16 +124,40 @@ export default function CategoryGrid() {
     }
   };
 
+  const scrollToCategory = (index: number) => {
+    if (scrollContainerRef.current) {
+      const targetLeft = index * 145;
+      scrollContainerRef.current.scrollTo({
+        left: targetLeft,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
-    <section className="py-8 sm:py-14 bg-[#030712] border-b border-slate-800/60 px-4 md:px-10 overflow-hidden">
+    <section 
+      className="py-8 sm:py-14 bg-[#030712] border-b border-slate-800/60 px-4 md:px-10 overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => {
+        // Resume auto-sliding after 1.5s
+        setTimeout(() => setIsPaused(false), 1500);
+      }}
+    >
       <div className="max-w-7xl mx-auto">
         
         {/* Section Header with Desktop View All & Mobile Scroll Arrows */}
         <div className="flex items-end justify-between mb-5 sm:mb-8 gap-2">
           <div>
-            <span className="text-cyan-400 text-[10px] sm:text-xs font-bold tracking-widest uppercase px-2.5 sm:px-3 py-0.5 sm:py-1 bg-cyan-500/10 rounded-full border border-cyan-500/20">
-              Browse Categories
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-cyan-400 text-[10px] sm:text-xs font-bold tracking-widest uppercase px-2.5 sm:px-3 py-0.5 sm:py-1 bg-cyan-500/10 rounded-full border border-cyan-500/20">
+                Browse Categories
+              </span>
+              <span className="sm:hidden text-[9px] font-bold text-slate-500 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded-full flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Auto Slides
+              </span>
+            </div>
             <h2 className="text-lg sm:text-2xl md:text-3xl font-extrabold text-white mt-1.5 sm:mt-2">
               Explore Popular Gadget Hubs
             </h2>
@@ -123,8 +170,8 @@ export default function CategoryGrid() {
                 type="button"
                 onClick={() => scroll("left")}
                 disabled={!canScrollLeft}
-                className="p-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all"
-                aria-label="Scroll left"
+                className="p-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all cursor-pointer"
+                aria-label="Previous Category"
               >
                 <ArrowRight className="w-3.5 h-3.5 rotate-180" />
               </button>
@@ -132,8 +179,8 @@ export default function CategoryGrid() {
                 type="button"
                 onClick={() => scroll("right")}
                 disabled={!canScrollRight}
-                className="p-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all"
-                aria-label="Scroll right"
+                className="p-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all cursor-pointer"
+                aria-label="Next Category"
               >
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
@@ -150,7 +197,7 @@ export default function CategoryGrid() {
           </div>
         </div>
 
-        {/* Carousel for Mobile (< sm) & Responsive Grid for Desktop (>= sm) */}
+        {/* Auto Carousel for Mobile (< sm) & Responsive Grid for Desktop (>= sm) */}
         <div
           ref={scrollContainerRef}
           onScroll={checkScroll}
@@ -166,7 +213,7 @@ export default function CategoryGrid() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.35, delay: index * 0.04 }}
-                className="shrink-0 w-[130px] sm:w-auto snap-start"
+                className="shrink-0 w-[135px] sm:w-auto snap-start"
               >
                 <Link
                   href={cat.href}
@@ -189,14 +236,17 @@ export default function CategoryGrid() {
           })}
         </div>
 
-        {/* Mobile Swipe Indicators */}
+        {/* Mobile Interactive Dots */}
         <div className="flex sm:hidden items-center justify-center gap-1.5 mt-2">
           {categories.map((_, i) => (
-            <span
+            <button
               key={i}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === activeIndex ? "w-4 bg-cyan-400" : "w-1.5 bg-slate-800"
+              type="button"
+              onClick={() => scrollToCategory(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                i === activeIndex ? "w-5 bg-cyan-400" : "w-1.5 bg-slate-800 hover:bg-slate-700"
               }`}
+              aria-label={`Go to slide ${i + 1}`}
             />
           ))}
         </div>

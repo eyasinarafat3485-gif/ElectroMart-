@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaFacebook } from 'react-icons/fa6';
@@ -12,8 +12,8 @@ import {
   FiBookOpen, 
   FiShield 
 } from 'react-icons/fi';
+import { Building2, MessageSquare, Clock, PhoneCall, ShieldCheck, HelpCircle } from 'lucide-react';
 
-// Types for Contact Cards
 interface ContactMethod {
   id: number;
   icon: React.ReactNode;
@@ -45,28 +45,29 @@ export default function SupportPage(): React.JSX.Element {
   const contactMethods: ContactMethod[] = [
     {
       id: 1,
-      icon: <FaFacebook className="w-6 h-6" />,
-      title: "Live Chat Support",
-      description: "Chat with our global team for immediate technical assistance.",
-      actionText: "Start Live Chat",
-      badge: "Avg. response: 2m",
-      color: "from-cyan-500 to-blue-600"
+      icon: <FaFacebook className="w-5 h-5" />,
+      title: "Live Messenger Support",
+      description: "Chat with our Dhaka technical desk for immediate order tracking and warranty claim guidance.",
+      actionText: "Open Messenger",
+      badge: "Avg. 2 min reply",
+      color: "from-blue-600 to-indigo-600 text-white"
     },
     {
       id: 2,
-      icon: <FiMail className="w-6 h-6" />,
-      title: "Email Ticket",
-      description: "Open a formal developer or billing support ticket anytime.",
-      actionText: "Open Ticket",
-      color: "from-purple-500 to-indigo-600"
+      icon: <FiMail className="w-5 h-5" />,
+      title: "Official Ticket Desk",
+      description: "Submit a formal hardware RMA or 0% EMI inquiry to our customer care team.",
+      actionText: "Submit Ticket",
+      color: "from-purple-600 to-indigo-600 text-white"
     },
     {
       id: 3,
-      icon: <FiPhone className="w-6 h-6" />,
-      title: "Direct Request",
-      description: "Available for enterprise clients requiring urgent care.",
-      actionText: "Request Callback",
-      color: "from-emerald-500 to-teal-600"
+      icon: <FiPhone className="w-5 h-5" />,
+      title: "Hotline Support",
+      description: "Direct assistance for corporate bulk purchases and urgent parcel delivery.",
+      actionText: "Call +880 1900-123456",
+      badge: "24/7 Active",
+      color: "from-emerald-600 to-teal-600 text-white"
     }
   ];
 
@@ -74,12 +75,11 @@ export default function SupportPage(): React.JSX.Element {
     e.preventDefault();
     setLoading(true);
     
-    // Simulating API call
     setTimeout(() => {
       setLoading(false);
       setIsSubmitted(true);
       setForm({ name: '', email: '', subject: '', message: '' });
-    }, 1500);
+    }, 1200);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
@@ -88,159 +88,154 @@ export default function SupportPage(): React.JSX.Element {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-indigo-500/30 selection:text-indigo-200 pt-15 px-4 md:px-10 sm:px-6 lg:px-8 overflow-x-hidden relative">
-      
-      {/* Background Decorative Gradients */}
-      <div className="absolute top-0 left-1/4 bg-slate-900 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-cyan-600/5 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="mx-auto  py-16 relative z-10">
+    <div className="min-h-screen bg-[#030712] text-slate-100 py-12 px-4 md:px-10 sm:px-6 lg:px-8 relative overflow-hidden tech-grid-pattern">
+      <div className="mx-auto max-w-6xl relative z-10">
         
-        {/* Header / Hero Section */}
+        {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto mb-20 space-y-4"
+          transition={{ duration: 0.5 }}
+          className="text-center max-w-3xl mx-auto mb-14 space-y-4 pt-4"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-bold text-cyan-400  tracking-wide uppercase">
-            <span className="w-2 h-2 rounded-full text-xs font-bold bg-cyan-400 animate-pulse uppercase " />
-            All Systems Operational
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-bold text-emerald-400 uppercase tracking-wide">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            24/7 Bangladesh Support Center Online
           </div>
-           <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight mt-4">
-            How can we <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">help you thrive?</span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
+            How Can We <span className="bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">Assist Your Tech Needs?</span>
           </h1>
-          <p className="text-lg text-slate-400 font-normal leading-relaxed">
-            Get personalized assistance from our engineering and product specialist teams. Choose a channel or leave a direct request below.
+          <p className="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto leading-relaxed">
+            Get prompt assistance from our certified hardware technicians, warranty specialists, and customer success team.
           </p>
         </motion.div>
 
-        {/* 3-Column Interactive Contact Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+        {/* 3 Contact Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           {contactMethods.map((method) => (
-            <div 
+            <motion.div 
               key={method.id} 
-              className="group relative rounded-2xl border border-slate-800 bg-slate-900/40 backdrop-blur-md p-6 transition-all duration-300 hover:border-slate-700 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-950/20 flex flex-col justify-between"
+              whileHover={{ y: -5 }}
+              className="relative rounded-3xl border border-slate-800/90 bg-slate-900/60 backdrop-blur-xl p-6 transition-all duration-300 hover:border-cyan-500/40 shadow-xl flex flex-col justify-between"
             >
               <div>
-                <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${method.color} text-white shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                  {method.icon}
+                <div className="flex items-center justify-between mb-5">
+                  <div className={`p-3 rounded-2xl bg-gradient-to-br ${method.color} shadow-lg`}>
+                    {method.icon}
+                  </div>
+                  {method.badge && (
+                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-cyan-400">
+                      {method.badge}
+                    </span>
+                  )}
                 </div>
-                {method.badge && (
-                  <span className="absolute top-6 right-6 text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-800 border border-slate-700 text-slate-300">
-                    {method.badge}
-                  </span>
-                )}
-                <h3 className="text-xl font-bold text-slate-100 mb-2 group-hover:text-white transition-colors">
+
+                <h3 className="text-lg font-bold text-white mb-2">
                   {method.title}
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed mb-8">
+                <p className="text-slate-400 text-xs leading-relaxed mb-6">
                   {method.description}
                 </p>
               </div>
               
-              <button className="w-full inline-flex items-center justify-between text-sm font-semibold text-slate-300 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 hover:border-slate-600 px-4 py-3 rounded-xl transition-all duration-200 group-hover:text-white">
-                {method.actionText}
-                <FiArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              <button className="w-full inline-flex items-center justify-between text-xs font-bold text-slate-200 bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 px-4 py-3 rounded-2xl transition-all cursor-pointer">
+                <span>{method.actionText}</span>
+                <FiArrowRight className="w-3.5 h-3.5 text-cyan-400" />
               </button>
-            </div>
+            </motion.div>
           ))}
         </div>
 
-        {/* Core Layout: Form & Alternative Resources split */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        {/* Split Section: Form & Resources */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Column: Direct Ticket Form */}
-          <div className="lg:col-span-7 bg-slate-900/30 border border-slate-800/80 rounded-2xl p-6 sm:p-10 backdrop-blur-sm">
-            <h2 className="text-2xl font-bold text-white mb-2">Send a Direct Message</h2>
-            <p className="text-slate-400 text-sm mb-8">
-              Can not talk right now? Drop your query here, and our system will instantly route it to the right specialist department.
+          {/* Left: Support Ticket Form */}
+          <div className="lg:col-span-7 bg-slate-900/60 border border-slate-800/90 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl">
+            <h2 className="text-xl font-bold text-white mb-1">Submit a Support Ticket</h2>
+            <p className="text-slate-400 text-xs mb-6">
+              Fill out your details below and our customer care team will respond via phone or email within 1 hour.
             </p>
 
             {isSubmitted ? (
-              <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl p-6 text-center space-y-3 animate-fade-in">
-                <FiCheckCircle className="w-12 h-12 mx-auto text-emerald-400" />
-                <h3 className="text-lg font-semibold text-white">Message Dispatched Successfully</h3>
-                <p className="text-sm text-slate-400 max-w-md mx-auto">
-                  Thank you for reaching out. A confirmation code has been sent to your mail. Our technical desk will review this within 1 hour.
+              <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-2xl p-6 text-center space-y-3">
+                <FiCheckCircle className="w-10 h-10 mx-auto text-emerald-400" />
+                <h3 className="text-base font-bold text-white">Ticket Submitted Successfully!</h3>
+                <p className="text-xs text-slate-300 max-w-sm mx-auto">
+                  Your ticket reference has been logged. Our specialist team in Dhaka will contact you shortly.
                 </p>
                 <button 
                   onClick={() => setIsSubmitted(false)}
-                  className="mt-4 text-xs font-medium text-emerald-400 underline underline-offset-4 hover:text-emerald-300"
+                  className="mt-3 text-xs font-bold text-cyan-400 underline cursor-pointer"
                 >
-                  Send another request
+                  Send another query
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label htmlFor="name" className="text-xs font-semibold tracking-wider text-slate-400 uppercase">Your Name</label>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">Your Name</label>
                     <input
                       type="text"
-                      id="name"
                       name="name"
                       required
                       value={form.name}
                       onChange={handleInputChange}
                       placeholder="e.g. Eyasin Arafat"
-                      className="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder:text-slate-600 outline-none transition-colors focus:ring-1 focus:ring-indigo-500"
+                      className="w-full bg-slate-950/80 border border-slate-700/80 focus:border-cyan-500 rounded-2xl px-4 py-3 text-xs sm:text-sm text-white outline-none shadow-inner"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label htmlFor="email" className="text-xs font-semibold tracking-wider text-slate-400 uppercase">Email Address</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">Email Address</label>
                     <input
                       type="email"
-                      id="email"
                       name="email"
                       required
                       value={form.email}
                       onChange={handleInputChange}
                       placeholder="you@domain.com"
-                      className="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder:text-slate-600 outline-none transition-colors focus:ring-1 focus:ring-indigo-500"
+                      className="w-full bg-slate-950/80 border border-slate-700/80 focus:border-cyan-500 rounded-2xl px-4 py-3 text-xs sm:text-sm text-white outline-none shadow-inner"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="subject" className="text-xs font-semibold tracking-wider text-slate-400 uppercase">Subject Topic</label>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">Subject / Order ID</label>
                   <input
                     type="text"
-                    id="subject"
                     name="subject"
                     required
                     value={form.subject}
                     onChange={handleInputChange}
-                    placeholder="Short summary of the issue..."
-                    className="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder:text-slate-600 outline-none transition-colors focus:ring-1 focus:ring-indigo-500"
+                    placeholder="e.g. Order #10492 Warranty claim inquiry"
+                    className="w-full bg-slate-950/80 border border-slate-700/80 focus:border-cyan-500 rounded-2xl px-4 py-3 text-xs sm:text-sm text-white outline-none shadow-inner"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="message" className="text-xs font-semibold tracking-wider text-slate-400 uppercase">Detailed Description</label>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">Detailed Message</label>
                   <textarea
-                    id="message"
                     name="message"
-                    rows={5}
+                    rows={4}
                     required
                     value={form.message}
                     onChange={handleInputChange}
-                    placeholder="Describe your issue or custom request step-by-step..."
-                    className="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder:text-slate-600 outline-none transition-colors focus:ring-1 focus:ring-indigo-500 resize-none"
+                    placeholder="Describe your question, hardware issue, or claim request in detail..."
+                    className="w-full bg-slate-950/80 border border-slate-700/80 focus:border-cyan-500 rounded-2xl px-4 py-3 text-xs sm:text-sm text-white outline-none shadow-inner resize-none"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 text-white text-sm font-semibold px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-indigo-600/10 transform active:scale-[0.99]"
+                  className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 disabled:opacity-50 text-white text-xs sm:text-sm font-bold px-6 py-3.5 rounded-2xl transition-all shadow-lg shadow-indigo-600/25 cursor-pointer"
                 >
                   {loading ? (
-                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
                       <FiSend className="w-4 h-4" />
-                      Submit Support Ticket
+                      <span>Submit Support Ticket</span>
                     </>
                   )}
                 </button>
@@ -248,54 +243,42 @@ export default function SupportPage(): React.JSX.Element {
             )}
           </div>
 
-          {/* Right Column: Documentation / Knowledge Base Alternatives */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="border border-slate-800/60 bg-slate-900/10 rounded-2xl p-6 space-y-6">
-              <h3 className="text-lg font-bold text-white tracking-tight">Self-Service Resources</h3>
+          {/* Right: Walk-In Hubs & Knowledge Base */}
+          <div className="lg:col-span-5 space-y-5">
+            <div className="border border-slate-800/80 bg-slate-900/60 rounded-3xl p-6 backdrop-blur-xl shadow-xl space-y-4">
+              <h3 className="text-base font-bold text-white tracking-tight">Physical Support Points (BD)</h3>
               
-              <div className="space-y-4">
-                {/* Resource item 1 */}
-                <div className="flex gap-4 p-3 rounded-xl hover:bg-slate-900/40 transition-colors border border-transparent hover:border-slate-800 group cursor-pointer">
-                  <div className="p-2.5 h-fit rounded-lg bg-slate-800 text-indigo-400">
-                    <FiBookOpen className="w-5 h-5" />
-                  </div>
+              <div className="space-y-3">
+                <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-start gap-3">
+                  <Building2 className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">Developer Documentation</h4>
-                    <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">Explore SDKs, API references, configuration guides, and architectural models.</p>
+                    <h4 className="text-xs font-bold text-white">IDB Bhaban Experience Center</h4>
+                    <p className="text-[11px] text-slate-400 mt-0.5">Level 4, BCS Computer City, Agargaon, Dhaka. Open 10 AM - 8 PM (Sat-Thu).</p>
                   </div>
                 </div>
 
-                {/* Resource item 2 */}
-                <div className="flex gap-4 p-3 rounded-xl hover:bg-slate-900/40 transition-colors border border-transparent hover:border-slate-800 group cursor-pointer">
-                  <div className="p-2.5 h-fit rounded-lg bg-slate-800 text-cyan-400">
-                    <FiLifeBuoy className="w-5 h-5" />
-                  </div>
+                <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-start gap-3">
+                  <Building2 className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">Community Knowledge Base</h4>
-                    <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">Read curated integration insights, troubleshooting methods, and tips from experts.</p>
+                    <h4 className="text-xs font-bold text-white">Multiplan Center Tech Hub</h4>
+                    <p className="text-[11px] text-slate-400 mt-0.5">Level 6, ECS Computer City, Elephant Road, Dhaka. Open 10 AM - 8 PM.</p>
                   </div>
                 </div>
 
-                {/* Resource item 3 */}
-                <div className="flex gap-4 p-3 rounded-xl hover:bg-slate-900/40 transition-colors border border-transparent hover:border-slate-800 group cursor-pointer">
-                  <div className="p-2.5 h-fit rounded-lg bg-slate-800 text-purple-400">
-                    <FiShield className="w-5 h-5" />
-                  </div>
+                <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-start gap-3">
+                  <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">Trust & Safety Portal</h4>
-                    <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">Check security compliance updates, status histories, data encryption details.</p>
+                    <h4 className="text-xs font-bold text-white">Official Brand RMA Support</h4>
+                    <p className="text-[11px] text-slate-400 mt-0.5">Direct replacement servicing for Apple, Sony, Samsung, Asus and Dell authorized units.</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Micro-Card info */}
-            <div className="rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950/20 to-slate-900 border border-slate-800 p-6 text-center">
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Looking for active server incidents or API changelogs? <br/>
-                <span className="text-indigo-400 font-medium hover:underline cursor-pointer inline-flex items-center gap-1 mt-1">
-                  Visit Developer Changelog <FiArrowRight className="w-3 h-3" />
-                </span>
+            <div className="rounded-3xl bg-slate-900/60 border border-slate-800/80 p-5 text-center">
+              <p className="text-xs text-slate-400">
+                Need urgent parcel tracking? Call our direct hotline: <br/>
+                <strong className="text-cyan-400 text-sm font-bold">+880 1900-123456</strong>
               </p>
             </div>
 

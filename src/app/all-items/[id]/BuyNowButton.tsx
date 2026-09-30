@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from "next/navigation"; 
 import { motion } from "framer-motion";
 import { IoCartOutline } from 'react-icons/io5';
-import { Loader2 } from "lucide-react";
-import { toast } from 'react-toastify';
-import { authClient } from '@/lib/auth-client';
+import { ArrowRight, Zap } from "lucide-react";
 
 interface ItemDetail {
   _id: string; 
@@ -34,78 +32,44 @@ interface BuyNowButtonProps {
   user: UserInfo | null;
 }
 
-export default function BuyNowButton({ item, user }: BuyNowButtonProps) {
-  const [isOrdering, setIsOrdering] = useState<boolean>(false);
+export default function BuyNowButton({ item }: BuyNowButtonProps) {
   const router = useRouter(); 
 
-  const handleBuyNow = async () => {
-    if (!user) {
-      toast.warning("Please login first to place an order!");
-      return;
-    }
-
-    setIsOrdering(true);
-
-    const orderData = {
-      userId: user._id,
-      userName: user.name,
-      userEmail: user.email,
-      userImage: user.image || "https://placeholder.com/user.png",
-      productId: item._id,
-      productTitle: item.title,
-      price: item.price,
-      imageUrl: item.image,
-      orderedAt: new Date().toISOString(),
-    };
-
+  const handleBuyNow = () => {
+    // Save to active checkout cart for instant smooth checkout
     try {
-      // const { data: tokenData } = await authClient.token();
-      
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/orders`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // "authorization": `Bearer ${tokenData?.token}`,
-        },
-        body: JSON.stringify(orderData),
-      });
+      localStorage.setItem("electromart_active_cart", JSON.stringify([{
+        _id: item._id,
+        title: item.title,
+        price: Number(item.price) || 0,
+        image: item.image,
+        category: item.category,
+        brand: item.brand,
+        quantity: 1
+      }]));
+    } catch (e) {}
 
-      if (res.ok) {
-        toast.success("Order successfully done!");
-        
-        setTimeout(() => {
-          router.push("/my-collection");
-        }, 1500);
-
-      } else {
-        toast.error("Failed to place your order.");
-        setIsOrdering(false);
-      }
-    } catch (error) {
-      console.error("Order error:", error);
-      toast.error("Something went wrong!");
-      setIsOrdering(false);
-    }
+    router.push(`/checkout?productId=${item._id}&qty=1`);
   };
 
   return (
-    <motion.button
-      onClick={handleBuyNow}
-      whileHover={{ scale: item.stock > 0 && !isOrdering ? 1.02 : 1 }}
-      whileTap={{ scale: item.stock > 0 && !isOrdering ? 0.98 : 1 }}
-      disabled={item.stock <= 0 || isOrdering}
-      className={`w-full flex items-center justify-center gap-3 rounded-2xl p-4 text-base font-bold text-white transition-all duration-300 shadow-lg ${
-        item.stock > 0 
-          ? "bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 shadow-cyan-500/10 hover:shadow-cyan-500/20 cursor-pointer" 
-          : "bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed"
-      } ${isOrdering ? "opacity-75 cursor-wait" : ""}`}
-    >
-      {isOrdering ? (
-        <Loader2 className="w-5 h-5 animate-spin" />
-      ) : (
-        <IoCartOutline size={21} />
-      )}
-      {item.stock > 0 ? (isOrdering ? "Processing..." : "Buy Now") : "Out of Stock"}
-    </motion.button>
+    <div className="flex flex-col sm:flex-row gap-3 pt-1">
+      <motion.button
+        type="button"
+        onClick={handleBuyNow}
+        whileHover={{ scale: item.stock > 0 ? 1.02 : 1 }}
+        whileTap={{ scale: item.stock > 0 ? 0.98 : 1 }}
+        disabled={item.stock <= 0}
+        className={`flex-1 flex items-center justify-center gap-2.5 rounded-2xl p-4 text-sm sm:text-base font-black text-white transition-all duration-300 shadow-xl ${
+          item.stock > 0 
+            ? "bg-gradient-to-r from-rose-500 via-rose-600 to-pink-600 hover:from-rose-600 hover:to-pink-700 shadow-rose-600/30 cursor-pointer" 
+            : "bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed"
+        }`}
+      >
+        <Zap className="w-5 h-5 fill-white text-white" />
+        <span>{item.stock > 0 ? "Order Now • Buy Now" : "Out of Stock"}</span>
+        <ArrowRight className="w-4 h-4" />
+      </motion.button>
+    </div>
   );
 }

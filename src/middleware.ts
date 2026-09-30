@@ -8,29 +8,23 @@ export async function middleware(request: NextRequest) {
   const session = await auth.api.getSession({
     headers: request.headers,
   });
-  console.log("SESSION:", JSON.stringify(session, null, 2));
 
   const pathname = request.nextUrl.pathname;
 
-  const commonProtectedRoutes = ["/my-collection"];
+  // Admin-only protected routes
   const adminOnlyRoutes = ["/add-item", "/order-manage"];
-
-  const isCommonProtected = commonProtectedRoutes.some((route) => pathname.startsWith(route));
   const isAdminOnly = adminOnlyRoutes.some((route) => pathname.startsWith(route));
 
-  if ((isCommonProtected || isAdminOnly) && !session) {
+  // If trying to access admin routes without login
+  if (isAdminOnly && !session) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("callbackUrl", request.url);
     return NextResponse.redirect(loginUrl);
   }
 
-  console.log("SESSION:", session);
-console.log("USER:", session?.user);
-
-
+  // If logged in but not admin
   if (isAdminOnly && session && session.user?.role !== "admin") {
     const loginUrl = new URL("/login", request.url);
-
     loginUrl.searchParams.set("callbackUrl", request.url);
     return NextResponse.redirect(loginUrl);
   }
@@ -40,7 +34,6 @@ console.log("USER:", session?.user);
 
 export const config = {
   matcher: [
-    "/my-collection/:path*",
     "/add-item/:path*",
     "/order-manage/:path*",
   ],

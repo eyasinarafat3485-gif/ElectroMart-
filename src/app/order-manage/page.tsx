@@ -9,27 +9,24 @@ import {
   Truck,
   XCircle,
   Trash2,
+  ShieldCheck,
+  Calendar,
+  DollarSign
 } from "lucide-react";
 import { toast } from "react-toastify";
-import { authClient } from "@/lib/auth-client";
-
 
 type OrderStatus = "pending" | "confirmed" | "delivered" | "rejected";
 
 interface Order {
   _id: string;
-
   userId: string;
   userName: string;
   userEmail: string;
   userImage: string;
-
   productId: string;
   productTitle: string;
   imageUrl: string;
-
   price: number;
-
   orderedAt: string;
   status: OrderStatus;
 }
@@ -46,17 +43,17 @@ interface DeleteResult {
 const API = process.env.NEXT_PUBLIC_SERVER_URL;
 
 const STATUS_BADGE: Record<OrderStatus, string> = {
-  pending: "bg-yellow-500/20 text-yellow-400",
-  confirmed: "bg-blue-500/20 text-blue-400",
-  delivered: "bg-green-500/20 text-green-400",
-  rejected: "bg-red-500/20 text-red-400",
+  pending: "bg-amber-500/10 text-amber-400 border-amber-500/30",
+  confirmed: "bg-blue-500/10 text-blue-400 border-blue-500/30",
+  delivered: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
+  rejected: "bg-rose-500/10 text-rose-400 border-rose-500/30",
 };
 
 const STATUS_LABEL: Record<OrderStatus, string> = {
-  pending: "Pending",
+  pending: "Processing",
   confirmed: "Confirmed",
   delivered: "Delivered",
-  rejected: "Rejected",
+  rejected: "Cancelled",
 };
 
 export default function OrderManagePage() {
@@ -69,18 +66,14 @@ export default function OrderManagePage() {
     OrderStatus | "delete" | ""
   >("");
 
-
   const fetchOrders = useCallback(async () => {
     if (!API) return;
 
     try {
-      // const { data: tokenData } = await authClient.token();
-
       const res = await fetch(`${API}/orders`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          // "authorization": `Bearer ${tokenData?.token}`,
         },
       });
 
@@ -100,12 +93,10 @@ export default function OrderManagePage() {
     if (!API) return;
 
     try {
-      // const { data: tokenData } = await authClient.token();
       const res = await fetch(`${API}/orders/count`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          // "authorization": `Bearer ${tokenData?.token}`,
         },
       });
 
@@ -120,7 +111,6 @@ export default function OrderManagePage() {
       toast.error("Failed to load order count");
     }
   }, []);
-
 
   useEffect(() => {
     if (!API) {
@@ -139,12 +129,10 @@ export default function OrderManagePage() {
     loadData();
   }, [fetchOrders, fetchCount]);
 
-
   const updateStatus = async (id: string, status: OrderStatus) => {
     if (!API) return;
 
     try {
-      // const { data: tokenData } = await authClient.token();
       setUpdatingId(id);
       setUpdatingAction(status);
 
@@ -152,7 +140,6 @@ export default function OrderManagePage() {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          // "authorization": `Bearer ${tokenData?.token}`,
         },
         body: JSON.stringify({ status }),
       });
@@ -169,13 +156,13 @@ export default function OrderManagePage() {
             order._id === id ? { ...order, status } : order
           )
         );
-        toast.success(`Order ${STATUS_LABEL[status].toLowerCase()} successfully`);
+        toast.success(`Order marked as ${STATUS_LABEL[status].toLowerCase()}`);
       } else {
-        toast.error("Failed to update order");
+        toast.error("Failed to update order status");
       }
     } catch (err) {
       console.error(err);
-      toast.error("Something went wrong");
+      toast.error("Something went wrong updating order");
     } finally {
       setUpdatingId("");
       setUpdatingAction("");
@@ -184,10 +171,8 @@ export default function OrderManagePage() {
 
   const deleteOrder = async (id: string) => {
     if (!API) return;
-    // if (!window.confirm("Delete this order? This cannot be undone.")) return;
 
     try {
-      // const { data: tokenData } = await authClient.token();
       setUpdatingId(id);
       setUpdatingAction("delete");
 
@@ -195,7 +180,6 @@ export default function OrderManagePage() {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          // "authorization": `Bearer ${tokenData?.token}`,
         },
       });
 
@@ -208,13 +192,13 @@ export default function OrderManagePage() {
       if (result.deletedCount > 0) {
         setOrders((prev) => prev.filter((order) => order._id !== id));
         setTotalOrders((prev) => Math.max(0, prev - 1));
-        toast.success("Order deleted successfully");
+        toast.success("Order record deleted");
       } else {
         toast.error("Delete failed");
       }
     } catch (err) {
       console.error(err);
-      toast.error("Something went wrong");
+      toast.error("Something went wrong deleting order");
     } finally {
       setUpdatingId("");
       setUpdatingAction("");
@@ -223,412 +207,298 @@ export default function OrderManagePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex justify-center items-center">
-        <Loader2 className="w-12 h-12 animate-spin text-cyan-400" />
+      <div className="min-h-screen bg-[#030712] flex flex-col justify-center items-center gap-3">
+        <Loader2 className="w-10 h-10 animate-spin text-cyan-400" />
+        <p className="text-xs text-slate-400 tracking-widest uppercase font-semibold">Loading Order Stream...</p>
       </div>
     );
   }
 
   return (
-    <section className="min-h-screen bg-slate-950 pt-30 pb-15 px-4 md:px-10">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-        <div>
-          <h1 className="mt-6 text-4xl md:text-5xl font-extrabold text-white leading-tight">
-            Order
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-              {" "}
-              Management
-            </span>
-          </h1>
-          <p className="mt-2 text-slate-400 text-lg leading-8">
-            Manage every customer order from one place.
-          </p>
-        </div>
-
-        <div className="bg-slate-900 border border-slate-800 rounded-xl px-8 py-5 flex items-center gap-5 shadow-lg">
-          <div className="bg-cyan-500/10 rounded-xl p-3">
-            <Package className="text-cyan-400 w-8 h-8" />
-          </div>
+    <section className="min-h-screen bg-[#030712] py-12 px-4 md:px-10 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 border-b border-slate-800/80 pb-6 mb-8">
           <div>
-            <p className="text-slate-400 text-sm">Total Orders</p>
-            <h2 className="text-3xl font-bold text-white">{totalOrders}</h2>
-          </div>
-        </div>
-      </div>
-
-      {/* Orders */}
-      <div className="mt-10">
-        {orders.length === 0 ? (
-          <div className="rounded-2xl border border-slate-800 bg-slate-900 py-20 text-center">
-            <Package className="mx-auto mb-4 h-14 w-14 text-slate-600" />
-            <h2 className="text-2xl font-semibold text-white">
-              No Orders Found
-            </h2>
-            <p className="mt-2 text-slate-400">
-              There are no customer orders available.
+            <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider px-3 py-1 bg-indigo-500/10 rounded-full border border-indigo-500/20">
+              Admin Operations
+            </span>
+            <h1 className="mt-3 text-3xl sm:text-4xl font-black text-white tracking-tight">
+              Order <span className="bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">Management</span>
+            </h1>
+            <p className="mt-1 text-xs sm:text-sm text-slate-400">
+              Live customer orders &amp; nationwide shipment fulfillment control.
             </p>
           </div>
-        ) : (
-          <>
-            {/* ---------- Desktop / Tablet Table (md and up) ---------- */}
-            <div className="hidden md:block overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900 shadow-xl">
-              <table className="min-w-full">
-                <thead className="bg-slate-800">
-                  <tr className="text-left">
-                    <th className="px-6 py-4 text-sm font-semibold text-slate-300">
-                      Product
-                    </th>
-                    <th className="px-6 py-4 text-sm font-semibold text-slate-300">
-                      Customer
-                    </th>
-                    <th className="px-6 py-4 text-sm font-semibold text-slate-300">
-                      Price
-                    </th>
-                    <th className="px-6 py-4 text-sm font-semibold text-slate-300">
-                      Status
-                    </th>
-                    <th className="px-6 py-4 text-sm font-semibold text-slate-300">
-                      Date
-                    </th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-slate-300">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
 
-                <tbody>
-                  {orders.map((order) => {
-                    const isRowBusy = updatingId === order._id;
-                    const isFinal =
-                      order.status === "delivered" ||
-                      order.status === "rejected";
+          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl px-6 py-4 flex items-center gap-4 shadow-xl backdrop-blur-md">
+            <div className="bg-cyan-500/10 rounded-xl p-2.5 text-cyan-400 border border-cyan-500/20">
+              <Package className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-slate-400 text-xs font-medium">Total Orders Stream</p>
+              <h2 className="text-2xl font-black text-white">{totalOrders} Items</h2>
+            </div>
+          </div>
+        </div>
 
-                    return (
-                      <tr
-                        key={order._id}
-                        className="border-t border-slate-800 hover:bg-slate-800/40 transition-all duration-300"
-                      >
-                        {/* Product */}
-                        <td className="px-6 py-5">
-                          <div className="flex items-center gap-4">
-                            <Image
-                              src={order.imageUrl || "/placeholder.png"}
-                              alt={order.productTitle}
-                              width={60}
-                              height={60}
-                              className="rounded-lg border border-slate-700 object-cover"
-                              unoptimized
-                            />
-                            <div>
-                              <h3 className="font-semibold text-white line-clamp-2 max-w-[180px]">
-                                {order.productTitle}
-                              </h3>
-                              <p className="text-xs text-slate-400">
-                                ID : {order.productId}
-                              </p>
+        {/* Orders Table & Mobile List */}
+        <div>
+          {orders.length === 0 ? (
+            <div className="rounded-3xl border border-slate-800 bg-slate-900/50 py-16 text-center">
+              <Package className="mx-auto mb-3 h-12 w-12 text-slate-600" />
+              <h2 className="text-xl font-bold text-white">No Customer Orders Yet</h2>
+              <p className="mt-1 text-xs text-slate-400">New orders from across Bangladesh will appear here automatically.</p>
+            </div>
+          ) : (
+            <>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto rounded-3xl border border-slate-800/90 bg-slate-900/60 shadow-2xl backdrop-blur-xl">
+                <table className="min-w-full divide-y divide-slate-800">
+                  <thead className="bg-slate-950/60">
+                    <tr className="text-left">
+                      <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Product</th>
+                      <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Customer</th>
+                      <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Price (৳)</th>
+                      <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-4 text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+
+                  <tbody className="divide-y divide-slate-800/60">
+                    {orders.map((order) => {
+                      const isRowBusy = updatingId === order._id;
+                      const isFinal = order.status === "delivered" || order.status === "rejected";
+
+                      return (
+                        <tr
+                          key={order._id}
+                          className="hover:bg-slate-800/40 transition-colors duration-200"
+                        >
+                          {/* Product */}
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-12 h-12 rounded-xl bg-slate-950 border border-slate-800 p-1 shrink-0 flex items-center justify-center overflow-hidden">
+                                <img
+                                  src={order.imageUrl || "/placeholder.png"}
+                                  alt={order.productTitle}
+                                  className="w-full h-full object-contain"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80";
+                                  }}
+                                />
+                              </div>
+                              <div className="min-w-0">
+                                <h3 className="font-bold text-xs sm:text-sm text-white line-clamp-1 max-w-[200px]">
+                                  {order.productTitle}
+                                </h3>
+                                <p className="text-[10px] text-slate-400 truncate mt-0.5">
+                                  ID: {order.productId}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        </td>
+                          </td>
 
-                        {/* Customer */}
-                        <td className="px-6 py-5">
-                          <div className="flex items-center gap-4">
-                            <div className="relative h-11 w-11 overflow-hidden rounded-full ring-2 ring-slate-700 shadow-md shrink-0">
-                              <Image
-                                src={order.userImage || "/placeholder.png"}
-                                alt={order.userName}
-                                fill
-                                className="object-cover object-center"
-                                unoptimized
-                              />
+                          {/* Customer */}
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold text-white shrink-0">
+                                {order.userName?.[0]?.toUpperCase() || "U"}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="font-bold text-xs text-white truncate">{order.userName}</p>
+                                <a
+                                  href={`mailto:${order.userEmail}`}
+                                  className="block truncate text-[11px] text-cyan-400 hover:underline"
+                                >
+                                  {order.userEmail}
+                                </a>
+                              </div>
                             </div>
+                          </td>
 
-                            <div className="min-w-0">
-                              <h4 className="truncate font-semibold text-white">
-                                {order.userName}
-                              </h4>
+                          {/* Price */}
+                          <td className="px-6 py-4 font-black text-white text-xs sm:text-sm">
+                            ৳ {(order.price ?? 0).toLocaleString('en-IN')}
+                          </td>
 
-                              <a
-                                href={`mailto:${order.userEmail}`}
-                                className="block truncate text-sm text-cyan-400 hover:text-cyan-300 hover:underline transition-colors"
-                              >
-                                {order.userEmail}
-                              </a>
-                            </div>
-                          </div>
-                        </td>
+                          {/* Status */}
+                          <td className="px-6 py-4">
+                            <span className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-bold border ${STATUS_BADGE[order.status]}`}>
+                              {STATUS_LABEL[order.status]}
+                            </span>
+                          </td>
 
-                        {/* Price */}
-                        <td className="px-6 py-5 font-bold text-green-400">
-                          ৳ {(order.price ?? 0).toLocaleString()}
-                        </td>
-
-                        {/* Status */}
-                        <td className="px-6 py-5">
-                          <span
-                            className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_BADGE[order.status]}`}
-                          >
-                            {STATUS_LABEL[order.status]}
-                          </span>
-                        </td>
-
-                        {/* Date */}
-                        <td className="px-6 py-5 text-sm text-slate-300 whitespace-nowrap">
-                          {new Date(order.orderedAt).toLocaleDateString(
-                            "en-GB",
-                            {
+                          {/* Date */}
+                          <td className="px-6 py-4 text-xs text-slate-400 whitespace-nowrap">
+                            {new Date(order.orderedAt).toLocaleDateString("en-GB", {
                               day: "2-digit",
                               month: "short",
                               year: "numeric",
-                            }
-                          )}
-                        </td>
+                            })}
+                          </td>
 
-                        {/* Actions */}
-                        <td className="px-6 py-5">
-                          <div className="flex flex-wrap justify-center gap-2">
-                            {/* Confirm */}
-                            <button
-                              type="button"
-                              title="Confirm order"
-                              disabled={isRowBusy || order.status !== "pending"}
-                              onClick={() => updateStatus(order._id, "confirmed")}
-                              className="rounded-lg bg-blue-600 px-3 py-2 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {isRowBusy && updatingAction === "confirmed" ? (
-                                <Loader2 className="h-4 w-4 animate-spin text-white" />
-                              ) : (
-                                <CheckCircle className="h-4 w-4 text-white" />
-                              )}
-                            </button>
+                          {/* Actions */}
+                          <td className="px-6 py-4">
+                            <div className="flex items-center justify-center gap-1.5">
+                              {/* Confirm */}
+                              <button
+                                type="button"
+                                title="Confirm Order"
+                                disabled={isRowBusy || order.status !== "pending"}
+                                onClick={() => updateStatus(order._id, "confirmed")}
+                                className="p-2 rounded-xl bg-blue-600/20 text-blue-400 border border-blue-500/30 hover:bg-blue-600 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+                              >
+                                {isRowBusy && updatingAction === "confirmed" ? (
+                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                ) : (
+                                  <CheckCircle className="h-3.5 w-3.5" />
+                                )}
+                              </button>
 
-                            {/* Deliver */}
-                            <button
-                              type="button"
-                              title="Mark as delivered"
-                              disabled={isRowBusy || order.status !== "confirmed"}
-                              onClick={() => updateStatus(order._id, "delivered")}
-                              className="rounded-lg bg-green-600 px-3 py-2 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {isRowBusy && updatingAction === "delivered" ? (
-                                <Loader2 className="h-4 w-4 animate-spin text-white" />
-                              ) : (
-                                <Truck className="h-4 w-4 text-white" />
-                              )}
-                            </button>
+                              {/* Deliver */}
+                              <button
+                                type="button"
+                                title="Mark Delivered"
+                                disabled={isRowBusy || order.status !== "confirmed"}
+                                onClick={() => updateStatus(order._id, "delivered")}
+                                className="p-2 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+                              >
+                                {isRowBusy && updatingAction === "delivered" ? (
+                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                ) : (
+                                  <Truck className="h-3.5 w-3.5" />
+                                )}
+                              </button>
 
-                            {/* Reject */}
-                            <button
-                              type="button"
-                              title="Reject order"
-                              disabled={isRowBusy || isFinal}
-                              onClick={() => {
-                                updateStatus(order._id, "rejected");
-                              }}
-                              className="rounded-lg bg-red-600 px-3 py-2 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {isRowBusy && updatingAction === "rejected" ? (
-                                <Loader2 className="h-4 w-4 animate-spin text-white" />
-                              ) : (
-                                <XCircle className="h-4 w-4 text-white" />
-                              )}
-                            </button>
+                              {/* Reject */}
+                              <button
+                                type="button"
+                                title="Cancel Order"
+                                disabled={isRowBusy || isFinal}
+                                onClick={() => updateStatus(order._id, "rejected")}
+                                className="p-2 rounded-xl bg-rose-600/20 text-rose-400 border border-rose-500/30 hover:bg-rose-600 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+                              >
+                                {isRowBusy && updatingAction === "rejected" ? (
+                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                ) : (
+                                  <XCircle className="h-3.5 w-3.5" />
+                                )}
+                              </button>
 
-                            {/* Delete */}
-                            <button
-                              type="button"
-                              title="Delete order"
-                              disabled={isRowBusy}
-                              onClick={() => deleteOrder(order._id)}
-                              className="rounded-lg bg-slate-700 px-3 py-2 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {isRowBusy && updatingAction === "delete" ? (
-                                <Loader2 className="h-4 w-4 animate-spin text-white" />
-                              ) : (
-                                <Trash2 className="h-4 w-4 text-white" />
-                              )}
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-
-              <div className="flex items-center justify-between border-t border-slate-800 px-6 py-4">
-                <p className="text-slate-400">Showing</p>
-                <p className="font-semibold text-white">
-                  {orders.length} Orders
-                </p>
+                              {/* Delete */}
+                              <button
+                                type="button"
+                                title="Delete Order Record"
+                                disabled={isRowBusy}
+                                onClick={() => deleteOrder(order._id)}
+                                className="p-2 rounded-xl bg-slate-800 text-slate-400 border border-slate-700 hover:bg-rose-600 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+                              >
+                                {isRowBusy && updatingAction === "delete" ? (
+                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                ) : (
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                )}
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
-            </div>
 
-            {/* ---------- Mobile Card List (below md) ---------- */}
-            <div className="md:hidden space-y-4">
-              {orders.map((order) => {
-                const isRowBusy = updatingId === order._id;
-                const isFinal =
-                  order.status === "delivered" || order.status === "rejected";
+              {/* Mobile Card List */}
+              <div className="md:hidden space-y-4">
+                {orders.map((order) => {
+                  const isRowBusy = updatingId === order._id;
+                  const isFinal = order.status === "delivered" || order.status === "rejected";
 
-                return (
-                  <div
-                    key={order._id}
-                    className="rounded-2xl border border-slate-800 bg-slate-900 p-4 shadow-lg"
-                  >
-                    {/* Row 1: Product + Status */}
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <Image
-                          src={order.imageUrl || "/placeholder.png"}
-                          alt={order.productTitle}
-                          width={56}
-                          height={56}
-                          className="rounded-lg border border-slate-700 object-cover shrink-0"
-                          unoptimized
-                        />
-                        <div className="min-w-0">
-                          <h3 className="font-semibold text-white text-sm line-clamp-2">
-                            {order.productTitle}
-                          </h3>
-                          <p className="text-xs text-slate-400 mt-0.5 truncate">
-                            ID : {order.productId}
-                          </p>
+                  return (
+                    <div
+                      key={order._id}
+                      className="rounded-3xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl space-y-4 backdrop-blur-md"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <img
+                            src={order.imageUrl || "/placeholder.png"}
+                            alt={order.productTitle}
+                            className="w-12 h-12 rounded-xl bg-slate-950 border border-slate-800 object-contain p-1 shrink-0"
+                          />
+                          <div className="min-w-0">
+                            <h3 className="font-bold text-white text-xs line-clamp-2">
+                              {order.productTitle}
+                            </h3>
+                            <p className="text-[10px] text-slate-400">ID: {order.productId}</p>
+                          </div>
+                        </div>
+
+                        <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold border ${STATUS_BADGE[order.status]}`}>
+                          {STATUS_LABEL[order.status]}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs pt-3 border-t border-slate-800">
+                        <div>
+                          <p className="text-slate-400 text-[10px]">Customer</p>
+                          <p className="font-bold text-white">{order.userName}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-slate-400 text-[10px]">Price (৳)</p>
+                          <p className="font-bold text-cyan-400">৳ {(order.price ?? 0).toLocaleString('en-IN')}</p>
                         </div>
                       </div>
 
-                      <span
-                        className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${STATUS_BADGE[order.status]}`}
-                      >
-                        {STATUS_LABEL[order.status]}
-                      </span>
-                    </div>
-
-                    {/* Row 2: Customer */}
-                    <div className="mt-4 flex items-center gap-3 border-t border-slate-800 pt-4">
-                      <div className="relative h-10 w-10 overflow-hidden rounded-full ring-2 ring-slate-700 shadow-md shrink-0">
-                        <Image
-                          src={order.userImage || "/placeholder.png"}
-                          alt={order.userName}
-                          fill
-                          className="object-cover object-center"
-                          unoptimized
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h4 className="truncate font-semibold text-white text-sm">
-                          {order.userName}
-                        </h4>
-                        <a
-                          href={`mailto:${order.userEmail}`}
-                          className="block truncate text-xs text-cyan-400 hover:text-cyan-300 hover:underline transition-colors"
+                      <div className="grid grid-cols-4 gap-2 pt-3 border-t border-slate-800">
+                        <button
+                          type="button"
+                          disabled={isRowBusy || order.status !== "pending"}
+                          onClick={() => updateStatus(order._id, "confirmed")}
+                          className="flex items-center justify-center py-2 rounded-xl bg-blue-600/20 text-blue-400 border border-blue-500/30 disabled:opacity-30"
                         >
-                          {order.userEmail}
-                        </a>
+                          <CheckCircle className="h-4 w-4" />
+                        </button>
+
+                        <button
+                          type="button"
+                          disabled={isRowBusy || order.status !== "confirmed"}
+                          onClick={() => updateStatus(order._id, "delivered")}
+                          className="flex items-center justify-center py-2 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 disabled:opacity-30"
+                        >
+                          <Truck className="h-4 w-4" />
+                        </button>
+
+                        <button
+                          type="button"
+                          disabled={isRowBusy || isFinal}
+                          onClick={() => updateStatus(order._id, "rejected")}
+                          className="flex items-center justify-center py-2 rounded-xl bg-rose-600/20 text-rose-400 border border-rose-500/30 disabled:opacity-30"
+                        >
+                          <XCircle className="h-4 w-4" />
+                        </button>
+
+                        <button
+                          type="button"
+                          disabled={isRowBusy}
+                          onClick={() => deleteOrder(order._id)}
+                          className="flex items-center justify-center py-2 rounded-xl bg-slate-800 text-slate-400 border border-slate-700 disabled:opacity-30"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                       </div>
                     </div>
-
-                    {/* Row 3: Price + Date */}
-                    <div className="mt-4 flex items-center justify-between border-t border-slate-800 pt-4 text-sm">
-                      <div>
-                        <p className="text-slate-500 text-xs">Price</p>
-                        <p className="font-bold text-green-400">
-                          ৳ {(order.price ?? 0).toLocaleString()}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-slate-500 text-xs">Date</p>
-                        <p className="text-slate-300 whitespace-nowrap">
-                          {new Date(order.orderedAt).toLocaleDateString(
-                            "en-GB",
-                            {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                            }
-                          )}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Row 4: Actions */}
-                    <div className="mt-4 grid grid-cols-4 gap-2 border-t border-slate-800 pt-4">
-                      {/* Confirm */}
-                      <button
-                        type="button"
-                        title="Confirm order"
-                        disabled={isRowBusy || order.status !== "pending"}
-                        onClick={() => updateStatus(order._id, "confirmed")}
-                        className="flex items-center justify-center rounded-lg bg-blue-600 py-2.5 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {isRowBusy && updatingAction === "confirmed" ? (
-                          <Loader2 className="h-4 w-4 animate-spin text-white" />
-                        ) : (
-                          <CheckCircle className="h-4 w-4 text-white" />
-                        )}
-                      </button>
-
-                      {/* Deliver */}
-                      <button
-                        type="button"
-                        title="Mark as delivered"
-                        disabled={isRowBusy || order.status !== "confirmed"}
-                        onClick={() => updateStatus(order._id, "delivered")}
-                        className="flex items-center justify-center rounded-lg bg-green-600 py-2.5 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {isRowBusy && updatingAction === "delivered" ? (
-                          <Loader2 className="h-4 w-4 animate-spin text-white" />
-                        ) : (
-                          <Truck className="h-4 w-4 text-white" />
-                        )}
-                      </button>
-
-                      {/* Reject */}
-                      <button
-                        type="button"
-                        title="Reject order"
-                        disabled={isRowBusy || isFinal}
-                        onClick={() => {
-                          updateStatus(order._id, "rejected");
-                        }}
-                        className="flex items-center justify-center rounded-lg bg-red-600 py-2.5 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {isRowBusy && updatingAction === "rejected" ? (
-                          <Loader2 className="h-4 w-4 animate-spin text-white" />
-                        ) : (
-                          <XCircle className="h-4 w-4 text-white" />
-                        )}
-                      </button>
-
-                      {/* Delete */}
-                      <button
-                        type="button"
-                        title="Delete order"
-                        disabled={isRowBusy}
-                        onClick={() => deleteOrder(order._id)}
-                        className="flex items-center justify-center rounded-lg bg-slate-700 py-2.5 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {isRowBusy && updatingAction === "delete" ? (
-                          <Loader2 className="h-4 w-4 animate-spin text-white" />
-                        ) : (
-                          <Trash2 className="h-4 w-4 text-white" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-
-              <div className="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-900 px-4 py-3">
-                <p className="text-slate-400 text-sm">Showing</p>
-                <p className="font-semibold text-white text-sm">
-                  {orders.length} Orders
-                </p>
+                  );
+                })}
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
+
       </div>
     </section>
   );

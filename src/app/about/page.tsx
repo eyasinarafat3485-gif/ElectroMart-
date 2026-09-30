@@ -2,7 +2,18 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { ShieldCheck, Zap, Users, Award, Mail, Phone, MapPin } from "lucide-react";
+import { 
+  ShieldCheck, 
+  Zap, 
+  Users, 
+  Award, 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Sparkles,
+  Building2,
+  CheckCircle2
+} from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 interface ChartData {
@@ -13,8 +24,8 @@ interface ChartData {
 const growthData: ChartData[] = [
   { year: "2023", customers: 12000 },
   { year: "2024", customers: 28000 },
-  { year: "2025", customers: 45000 },
-  { year: "2026", customers: 75000 },
+  { year: "2025", customers: 48000 },
+  { year: "2026", customers: 78000 },
 ];
 
 interface FeatureCardProps {
@@ -30,116 +41,119 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
 }) => (
   <motion.div
     whileHover={{ y: -5 }}
-    className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm shadow-xl flex flex-col items-center text-center space-y-3"
+    className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm shadow-xl flex flex-col items-center text-center space-y-3 transition-all duration-300 hover:border-cyan-500/40"
   >
-    <div className="p-3 bg-cyan-500/10 rounded-xl text-cyan-400 border border-cyan-500/20">
+    <div className="p-3 bg-cyan-500/10 rounded-2xl text-cyan-400 border border-cyan-500/20">
       {icon}
     </div>
-    <h3 className="text-lg font-bold text-white tracking-wide">{title}</h3>
-    <p className="text-sm text-slate-400 leading-relaxed">{description}</p>
+    <h3 className="text-base font-bold text-white tracking-wide">{title}</h3>
+    <p className="text-xs text-slate-400 leading-relaxed">{description}</p>
   </motion.div>
 );
 
 export default function AboutUsPage(): React.JSX.Element {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 py-15 pt-30 pb-15 px-4 md:px-10 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl space-y-20">
+    <div className="min-h-screen bg-[#030712] text-slate-100 py-12 px-4 md:px-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl space-y-16">
         
         {/* Hero Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center space-y-4 max-w-3xl mx-auto"
+          transition={{ duration: 0.5 }}
+          className="text-center space-y-4 max-w-3xl mx-auto pt-6"
         >
-          <span className="text-xs font-bold tracking-widest text-cyan-500 uppercase px-3 py-1 bg-cyan-500/10 rounded-full border border-cyan-500/20">
-            Who We Are
+          <span className="text-xs font-bold tracking-widest text-cyan-400 uppercase px-3.5 py-1.5 bg-cyan-500/10 rounded-full border border-cyan-500/20">
+            About ElectroMart Bangladesh
           </span>
-          <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight mt-8">
-            About <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">ElectroMart</span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
+            Pioneering the Ultimate <span className="bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">Tech Destination</span> in BD
           </h1>
-          <p className="text-base md:text-lg mt-6 text-slate-400 leading-relaxed">
-            ElectroMart is Bangladesh&apos;s premier tech and electronics marketplace, dedicated to bringing you global innovations right to your doorstep. Founded in 2023, we bridge the gap between world-class technology and smart consumers in Dhaka and beyond.
+          <p className="text-sm md:text-base text-slate-400 leading-relaxed">
+            Founded with a vision to eliminate counterfeit electronics and overpriced grey-market imports in Bangladesh, ElectroMart bridges global innovation directly to enthusiasts in Dhaka, Chittagong, Sylhet, and beyond.
           </p>
         </motion.div>
 
         {/* Mission & Vision */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <motion.div 
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="p-8 rounded-3xl bg-slate-900/40 border border-slate-800/60 flex flex-col justify-between"
+            className="p-8 rounded-3xl bg-slate-900/60 border border-slate-800/80 shadow-xl"
           >
-            <div className="space-y-4">
-              <h2 className="text-2xl font-extrabold text-white">Our Mission</h2>
-              <p className="text-slate-300 text-sm md:text-base leading-relaxed">
-                To empower lives by providing genuine electronic gadgets, tech hardware, and home appliances with seamless accessibility, unparalleled customer service, and reliable warranties.
+            <div className="space-y-3">
+              <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Core Purpose</span>
+              <h2 className="text-2xl font-black text-white">Our Mission</h2>
+              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                To empower Bangladeshi students, tech professionals, gamers, and households with 100% genuine electronics, prompt nationwide 24h delivery, and transparent warranty claims without hidden clauses.
               </p>
             </div>
           </motion.div>
 
           <motion.div 
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="p-8 rounded-3xl bg-slate-900/40 border border-slate-800/60 flex flex-col justify-between"
+            className="p-8 rounded-3xl bg-slate-900/60 border border-slate-800/80 shadow-xl"
           >
-            <div className="space-y-4">
-              <h2 className="text-2xl font-extrabold text-cyan-400">Our Vision</h2>
-              <p className="text-slate-300 text-sm md:text-base leading-relaxed">
-                To become the most trusted and user-centric tech e-commerce platform in the nation, setting high industry benchmarks for secure online trading and verified product quality.
+            <div className="space-y-3">
+              <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">Future Outlook</span>
+              <h2 className="text-2xl font-black text-white">Our Vision</h2>
+              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                To establish the benchmark for digital e-commerce excellence across all 64 districts of Bangladesh by integrating next-gen customer care, 0% EMI financing, and authentic brand partnerships.
               </p>
             </div>
           </motion.div>
         </div>
 
         {/* Core Values */}
-        <div className="space-y-8">
+        <div className="space-y-6">
           <div className="text-center">
-            <h2 className="text-3xl font-extrabold text-white tracking-tight">Why Choose Us</h2>
-            <p className="text-slate-400 text-sm mt-2">The core values we strictly stand by every single day.</p>
+            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">The ElectroMart Promise</h2>
+            <p className="text-slate-400 text-xs sm:text-sm mt-1">Strict quality and customer protection principles we live by.</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <FeatureCard 
-              icon={<ShieldCheck size={24} />} 
-              title="100% Authentic" 
-              description="Every product listed on ElectroMart is directly sourced from official global brands and verified suppliers."
+              icon={<ShieldCheck size={22} />} 
+              title="100% Verified Genuine" 
+              description="Official BTRC and manufacturer authorized serials for every unit."
             />
             <FeatureCard 
-              icon={<Zap size={24} />} 
-              title="Superfast Delivery" 
-              description="Get your favorite tech delivered right to your home inside Dhaka within 24 hours with secure packaging."
+              icon={<Zap size={22} />} 
+              title="Express 24h Dispatch" 
+              description="Fastest doorstep delivery inside Dhaka with real-time parcel updates."
             />
             <FeatureCard 
-              icon={<Users size={24} />} 
-              title="Dedicated Support" 
-              description="Our experienced tech-support squad is active 24/7 to solve your queries and handling claim processes."
+              icon={<Users size={22} />} 
+              title="Dedicated BD Support" 
+              description="Specialized hardware team to troubleshoot and assist with brand RMA claims."
             />
             <FeatureCard 
-              icon={<Award size={24} />} 
+              icon={<Award size={22} />} 
               title="Official Warranty" 
-              description="Enjoy peace of mind with valid official brand replacement warranties and internal service facilities."
+              description="Direct manufacturer replacement guarantees and local service facilities."
             />
           </div>
         </div>
 
         {/* Growth Chart */}
         <motion.div 
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="p-6 md:p-8 rounded-3xl bg-slate-900/30 border border-slate-800/80"
+          className="p-6 md:p-8 rounded-3xl bg-slate-900/60 border border-slate-800/80 shadow-xl"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-4 space-y-4">
-              <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Our Growth Story</h2>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                Numbers don&apos;t lie. Thanks to our transparent policies and customer loyalty, ElectroMart has achieved massive milestones in expanding its family across Bangladesh.
+              <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">Community Milestone</span>
+              <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">Our Growth in Bangladesh</h2>
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                Over 78,000 satisfied tech lovers across Bangladesh have trusted ElectroMart for their workstation setups, smartphones, and entertainment gear.
               </p>
-              <div className="pt-2">
-                <span className="text-3xl font-black text-cyan-400">75,000+</span>
-                <p className="text-xs text-slate-500 font-medium tracking-wide uppercase">Happy Active Customers</p>
+              <div className="pt-1">
+                <span className="text-3xl font-black text-cyan-400">78,000+</span>
+                <p className="text-[11px] text-slate-400 font-semibold tracking-wide uppercase">Active Customers across 64 Districts</p>
               </div>
             </div>
 
@@ -161,14 +175,15 @@ export default function AboutUsPage(): React.JSX.Element {
                     contentStyle={{ 
                       backgroundColor: '#0f172a', 
                       borderColor: '#1e293b', 
-                      borderRadius: '12px' 
+                      borderRadius: '16px',
+                      color: '#fff'
                     }}
-                    labelStyle={{ color: '#fff' }}
+                    labelStyle={{ color: '#38bdf8', fontWeight: 'bold' }}
                   />
                   <Bar 
                     dataKey="customers" 
-                    fill="#06b6d4" 
-                    radius={[8, 8, 0, 0]} 
+                    fill="#38bdf8" 
+                    radius={[10, 10, 0, 0]} 
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -176,20 +191,20 @@ export default function AboutUsPage(): React.JSX.Element {
           </div>
         </motion.div>
 
-        {/* Contact Info */}
-        <div className="border-t border-slate-800/60 pt-10 text-center max-w-2xl mx-auto space-y-4">
-          <h3 className="text-xl font-bold text-white">Have Any Questions?</h3>
-          <p className="text-sm text-slate-400">Feel free to connect with our official corporate branch for partnerships, bulk corporate queries, or service inquiries.</p>
+        {/* Experience Hubs */}
+        <div className="border-t border-slate-800/80 pt-10 text-center max-w-3xl mx-auto space-y-4">
+          <h3 className="text-xl font-bold text-white">Visit Our Experience Hubs</h3>
+          <p className="text-xs sm:text-sm text-slate-400">Feel the latest tech firsthand, inspect hardware, or pick up your online order instantly.</p>
           
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-slate-300 pt-2">
-            <span className="flex items-center gap-2 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800">
-              <MapPin size={16} className="text-cyan-400" /> Dhaka, Bangladesh
+          <div className="flex flex-wrap justify-center gap-4 text-xs text-slate-300 pt-2">
+            <span className="flex items-center gap-2 bg-slate-900/80 px-4 py-2.5 rounded-2xl border border-slate-800">
+              <Building2 size={14} className="text-cyan-400" /> IDB Bhaban, Agargaon, Dhaka
             </span>
-            <span className="flex items-center gap-2 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800">
-              <Phone size={16} className="text-cyan-400" /> +880 1234 567890
+            <span className="flex items-center gap-2 bg-slate-900/80 px-4 py-2.5 rounded-2xl border border-slate-800">
+              <Building2 size={14} className="text-cyan-400" /> Multiplan Center, Elephant Road, Dhaka
             </span>
-            <span className="flex items-center gap-2 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800">
-              <Mail size={16} className="text-cyan-400" /> support@electromart.com
+            <span className="flex items-center gap-2 bg-slate-900/80 px-4 py-2.5 rounded-2xl border border-slate-800">
+              <Phone size={14} className="text-cyan-400" /> +880 1900-123456
             </span>
           </div>
         </div>
